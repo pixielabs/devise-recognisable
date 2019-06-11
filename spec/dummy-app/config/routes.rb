@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
-  # Had to add the controllers bit below to get my controller to work!
-  devise_for :users, controllers: {sessions: "sessions"}
+  devise_for :users
 
   authenticated :user do
     root to: 'authenticated#index', as: :authenticated_root
