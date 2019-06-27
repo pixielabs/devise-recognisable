@@ -33,7 +33,10 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+You'll need to add this line to your routes:
+```
+devise_for :users, controllers: {sessions: 'sessions'}
+```
 
 ## Development
 
