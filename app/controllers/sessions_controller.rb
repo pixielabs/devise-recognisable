@@ -1,3 +1,5 @@
+require 'geocoder'
+
 class SessionsController < Devise::SessionsController
   prepend_before_action :check_for_authentication_token, only: :new
   prepend_before_action :perform_ip_check, only: :create

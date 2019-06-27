@@ -17,9 +17,6 @@ require "sprockets/railtie"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-# Require devise-recognisable
-require_relative '../../../lib/devise-recognisable.rb'
-
 module DummyApp
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
