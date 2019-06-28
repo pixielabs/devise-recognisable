@@ -7,9 +7,12 @@ clicking a one-time link in an email.
 
 ## Requirements
 
-You will need a Rails app with Devise successfully set up. See [Devise's documentation](https://github.com/plataformatec/devise/) for help setting up Devise.
+You will need a Rails app with Devise successfully set up. See
+[Devise's documentation](https://github.com/plataformatec/devise/) for help
+setting up Devise.
 
-You also need the [trackable module](https://www.rubydoc.info/github/plataformatec/devise/master/Devise/Models/Trackable) if you haven’t already got that. Devise have [instructions for adding trackable to users](https://github.com/plataformatec/devise/wiki/How-To:-Add-:trackable-to-Users).
+You also need the [trackable module](https://www.rubydoc.info/github/plataformatec/devise/master/Devise/Models/Trackable)
+if you haven’t already got that. Devise have [instructions for adding trackable to users](https://github.com/plataformatec/devise/wiki/How-To:-Add-:trackable-to-Users).
 
 ## Installation
 
@@ -36,13 +39,22 @@ devise_for :users, controllers: {sessions: 'sessions'}
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies. Then, run
+`rake spec` to run the tests. You can also run `bin/console` for an interactive
+prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`. To
+release a new version, update the version number in `version.rb`, and then run
+`bundle exec rake release`, which will create a git tag for the version, push
+git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/devise-recognisable. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at
+https://github.com/pixielabs/devise-recognisable. This project is intended to be
+a safe, welcoming space for collaboration, and contributors are expected to
+adhere to the [Contributor Covenant](http://contributor-covenant.org) code of
+conduct.
 
 ## License
 
@@ -50,4 +62,6 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the Devise::Recognisable project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/devise-recognisable/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the Devise::Recognisable project’s codebases, issue
+trackers, chat rooms and mailing lists is expected to follow the
+[code of conduct](https://github.com/pixielabs/devise-recognisable/blob/master/CODE_OF_CONDUCT.md).
