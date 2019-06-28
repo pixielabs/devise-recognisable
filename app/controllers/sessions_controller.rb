@@ -19,29 +19,30 @@ class SessionsController < Devise::SessionsController
       args = no_input.dup.push scope: resource_name
 
       # Find the user
-      user = User.find_by(email: params[:user][:email])
+      self.resource = resource_class.find_by(email: params[resource_name][:email])
 
       # Is the user's IP different to the last one?
       # Is it more than a certain distance from the last successful sign in?
       #
       # NOTE: Geocoder's location method might not be the safest?
       # See https://github.com/alexreisner/geocoder#geocoding-http-requests
-      last_sign_in = Geocoder.search(user.last_sign_in_ip).first
+      last_sign_in = Geocoder.search(self.resource.last_sign_in_ip).first
       current_sign_in = Geocoder.search(request.location.ip).first
       # NOTE: looks like sometimes the current_sign_in isn't a real thing?
       distance = Geocoder::Calculations.distance_between(last_sign_in&.coordinates, current_sign_in&.coordinates)
 
-      if user.last_sign_in_ip != request.location.ip or distance > MAX_DISTANCE
+      if self.resource.last_sign_in_ip != request.location.ip or distance > MAX_DISTANCE
 
         # Don't sign the user in, return them to the sign in screen with a flash
         # message.
         set_flash_message(:alert, :new_ip)
-        redirect_to new_user_session_path
+        redirect_to new_session_path(resource_class)
 
         # Send an email to the user with a link containing a unique token that is
         # valid for 5 minutes.
         # When the user clicks the link, sign them in.
-        UserMailer.with(user: user).new_ip.deliver_now
+        url_token = AuthenticationToken.encode(id: self.resource.id)
+        DeviseRecognisableMailer.new_ip(self.resource, url_token).deliver_now
       else
         # It's the same IP, so sign them in!
         warden.authenticate?(*args)
@@ -62,11 +63,11 @@ class SessionsController < Devise::SessionsController
       token = AuthenticationToken.decode(params[:token])
 
       # Check the token hasn't expired.
-      return new_user_session_path if token[:exp] < Time.now.to_i
+      return new_session_path(resource_class) if token[:exp] < Time.now.to_i
 
-      user = User.find token['user_id']
+      self.resource = resource_class.find token['id']
 
-      sign_in user
+      sign_in self.resource
     end
   end
 

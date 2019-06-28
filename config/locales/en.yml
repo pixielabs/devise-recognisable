@@ -1,0 +1,5 @@
+en:
+  devise:
+    mailers:
+      new_ip:
+        subject: 'Sign in attempt from a new IP'

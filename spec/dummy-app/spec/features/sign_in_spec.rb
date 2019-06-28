@@ -35,7 +35,7 @@ RSpec.feature "Sign in" do
         fill_in 'Password', with: user.password
         click_button 'Log in'
         expect(page).to have_content I18n.t('devise.sessions.user.new_ip')
-        open_email(user.email, with_subject: I18n.t('devise.mailer.new_ip'))
+        open_email(user.email, with_subject: I18n.t('devise.mailer.new_ip.subject'))
         visit_in_email('Log in')
         expect(page).to have_content('Home sweet home')
     end
