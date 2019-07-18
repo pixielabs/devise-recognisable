@@ -24,6 +24,7 @@ module Devise
           recognisable.send_new_ip_email if recognisable.persisted?
           recognisable
         end
+
       end
     end
   end

@@ -1,11 +1,11 @@
 require "rails_helper"
 
-RSpec.describe DeviseRecognisableMailer, type: :mailer do
+RSpec.describe Devise::Mailer, type: :mailer do
   let(:user) { FactoryBot.build :user }
 
   describe '#new_ip' do
     it 'works' do
-      email = DeviseRecognisableMailer.new_ip(user, 'token', {})
+      email = Devise::Mailer.new_ip(user, 'token', {})
 
       expect {
         email.deliver_now

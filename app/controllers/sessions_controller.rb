@@ -5,8 +5,6 @@ class SessionsController < Devise::SessionsController
   prepend_before_action :perform_ip_check, only: :create
   skip_before_action :require_no_authentication, only: :create
 
-  MAX_DISTANCE = 100
-
   # Check that users aren't trying to sign in from a new location.
   # This is mainly pulling all the stuff from Devise's :require_no_authentication.
   # See https://github.com/plataformatec/devise/blob/715192a7709a4c02127afb067e66230061b82cf2/app/controllers/devise_controller.rb#L98
@@ -31,7 +29,7 @@ class SessionsController < Devise::SessionsController
       # NOTE: looks like sometimes the current_sign_in isn't a real thing?
       distance = Geocoder::Calculations.distance_between(last_sign_in&.coordinates, current_sign_in&.coordinates)
 
-      if self.resource.last_sign_in_ip != request.location.ip or distance > MAX_DISTANCE
+      if self.resource.last_sign_in_ip != request.location.ip or distance > Devise.max_ip_distance 
 
         # Don't sign the user in, return them to the sign in screen with a flash
         # message.
