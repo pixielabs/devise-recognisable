@@ -38,11 +38,9 @@ class SessionsController < Devise::SessionsController
         set_flash_message(:alert, :new_ip)
         redirect_to new_session_path(resource_class)
 
-        # Send an email to the user with a link containing a unique token that is
-        # valid for 5 minutes.
-        # When the user clicks the link, sign them in.
-        url_token = AuthenticationToken.encode(id: self.resource.id)
-        DeviseRecognisableMailer.new_ip(self.resource, url_token).deliver_now
+        # Send an email to the user with a sign in link containing a unique
+        # token that is valid for 5 minutes.
+        resource_class.send_new_ip_email(resource_params)
       else
         # It's the same IP, so sign them in!
         warden.authenticate?(*args)

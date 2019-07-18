@@ -5,7 +5,7 @@ require "devise-recognisable/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "devise-recognisable"
-  spec.version       = Devise::Recognisable::VERSION
+  spec.version       = DeviseRecognisable::VERSION
   spec.authors       = ["Pixie Labs"]
   spec.email         = ["dev@pixielabs.io"]
 

@@ -1,4 +1,6 @@
-require 'rails'
+module DeviseRecognisable
+  autoload :Mailer, 'devise-recognisable/mailer'
+end
 
 module Devise
   module Recognisable
@@ -7,3 +9,5 @@ module Devise
     require_relative "devise-recognisable/engine"
   end
 end
+
+Devise.add_module :recognisable, model: 'devise-recognisable/model'
