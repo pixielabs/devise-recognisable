@@ -30,6 +30,13 @@ Or install it yourself as:
 
     $ gem install devise-recognisable
 
+Once you have Devise and `trackable` set up, add the `recognisable` module to your
+user model:
+
+```
+devise :database_authenticatable, :registerable, :trackable, <b>:recognisable</b>
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run
