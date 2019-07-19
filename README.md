@@ -33,9 +33,9 @@ Or install it yourself as:
 Once you have Devise and `trackable` set up, add the `recognisable` module to your
 user model:
 
-```
+<pre>
 devise :database_authenticatable, :registerable, :trackable, <b>:recognisable</b>
-```
+</pre>
 
 ## Development
 
