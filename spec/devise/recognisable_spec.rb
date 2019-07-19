@@ -1,6 +1,6 @@
-RSpec.describe Devise::Recognisable do
+RSpec.describe DeviseRecognisable do
   it "has a version number" do
-    expect(Devise::Recognisable::VERSION).not_to be nil
+    expect(DeviseRecognisable::VERSION).not_to be nil
   end
 
   it "does something useful" do

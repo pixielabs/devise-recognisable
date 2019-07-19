@@ -1,3 +1,5 @@
+require 'devise'
+
 module DeviseRecognisable
   autoload :Mailer, 'devise-recognisable/mailer'
 end

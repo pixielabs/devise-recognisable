@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "rails", ">=5"
+  spec.add_dependency "devise"
   spec.add_dependency "jwt"
   spec.add_dependency "geocoder"
 
