@@ -2,6 +2,7 @@ PATH
   remote: ../..
   specs:
     devise-recognisable (0.1.0)
+      devise
       geocoder
       jwt
       rails (>= 5)

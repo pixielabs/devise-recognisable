@@ -30,13 +30,6 @@ Or install it yourself as:
 
     $ gem install devise-recognisable
 
-## Usage
-
-You'll need to add this line to your routes:
-```
-devise_for :users, controllers: {sessions: 'sessions'}
-```
-
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run

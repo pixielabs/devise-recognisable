@@ -11,4 +11,10 @@ class Engine < Rails::Engine
     end
   end
 
+  # Extend mapping with after_initialize because it's not reloaded. This is so
+  # we can use our SessionsController instead of Devise's one.
+  config.after_initialize do
+    Devise::Mapping.send :prepend, DeviseRecognisable::Mapping
+  end
+
 end

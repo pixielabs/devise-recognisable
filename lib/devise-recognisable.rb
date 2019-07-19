@@ -2,6 +2,7 @@ require 'devise'
 
 module DeviseRecognisable
   autoload :Mailer, 'devise-recognisable/mailer'
+  autoload :Mapping, 'devise-recognisable/mapping'
 end
 
 module Devise
