@@ -6,7 +6,7 @@ module DeviseRecognisable
     def default_controllers(options)
       options[:controllers] ||= {}
       # Use our SessionsController instead of Devise's.
-      options[:controllers][:sessions] ||= 'sessions'
+      options[:controllers][:sessions] ||= 'devise_recognisable/sessions'
       super
     end
 
