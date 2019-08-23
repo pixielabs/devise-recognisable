@@ -1,6 +1,6 @@
 require 'geocoder'
 
-class SessionsController < Devise::SessionsController
+class DeviseRecognisable::SessionsController < Devise::SessionsController
   prepend_before_action :check_for_authentication_token, only: :new
   prepend_before_action :perform_ip_check, only: :create
   skip_before_action :require_no_authentication, only: :create
