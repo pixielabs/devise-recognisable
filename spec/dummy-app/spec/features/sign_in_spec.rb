@@ -42,7 +42,7 @@ RSpec.feature "Sign in" do
     end
 
     it 'does not log the user in' do
-      expect(page).to have_content I18n.t('devise.sessions.user.new_ip')
+      expect(page).to have_content I18n.t('devise.sessions.send_new_ip_instructions')
       expect(page).to_not have_content('Home sweet home')
     end
 

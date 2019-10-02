@@ -33,7 +33,7 @@ class DeviseRecognisable::SessionsController < Devise::SessionsController
 
         # Don't sign the user in, return them to the sign in screen with a flash
         # message.
-        set_flash_message(:alert, :new_ip)
+        set_flash_message(:alert, :send_new_ip_instructions)
         redirect_to new_session_path(resource_class)
 
         # Send an email to the user with a sign in link containing a unique

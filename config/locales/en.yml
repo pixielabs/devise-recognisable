@@ -2,4 +2,7 @@ en:
   devise:
     mailer:
       new_ip:
-        subject: 'Sign in attempt from a new IP'
+        subject: "Sign in attempt from a new IP"
+    sessions:
+      send_new_ip_instructions: "Sign in detected from a new IP. Please check your
+      email and follow the sign in link to sign in to your account."
