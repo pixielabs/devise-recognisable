@@ -4,10 +4,9 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <h1>Looks like you're attempting to sign in from a new IP address.</h1>
-    <p>
-      To proceed, click the link below. The link will be valid for 5 minutes.
-    </p>
-    <%= link_to 'Log in', new_session_url(@resource, token: @token) %>
+    <p>Hello <%= @resource.email %>,</p>
+    <p>it looks like you're attempting to sign in from a new IP address.</p>
+    <p>To proceed, click the link below. The link will be valid for 5 minutes.</p>
+    <p><%= link_to 'Log in', new_session_url(@resource, token: @token) %></p>
   </body>
 </html>
