@@ -45,7 +45,7 @@ RSpec.feature "Sign in" do
 
   context 'from a different IP' do
     let!(:user) { FactoryBot.create :user }
-    let!(:recognisable_session) { FactoryBot.create :recognisable_session, user: user }
+    let!(:recognisable_session) { FactoryBot.create :recognisable_session, recognisable_id: user.id, recognisable_type: 'User' }
 
     before do
       recognisable_session.update(sign_in_ip: FFaker::Internet.ip_v4_address)

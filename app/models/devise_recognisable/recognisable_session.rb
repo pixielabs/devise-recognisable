@@ -1,3 +1,3 @@
 class DeviseRecognisable::RecognisableSession < ApplicationRecord
-  belongs_to :user
+  belongs_to :recognisable, :polymorphic => true
 end

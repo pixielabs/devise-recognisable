@@ -8,7 +8,8 @@ class DeviseRecognisable::SessionsController < Devise::SessionsController
   def perform_ip_check
     # Find the user
     self.resource = resource_class.find_by(email: params[resource_name][:email])
-    previous_session = Devise.ref('DeviseRecognisable::RecognisableSession').get.where(user_id: self.resource).last
+    previous_session = Devise.ref('DeviseRecognisable::RecognisableSession').get
+      .where( recognisable: self.resource ).last
 
     return unless self.resource && previous_session.present?
 
@@ -52,7 +53,7 @@ class DeviseRecognisable::SessionsController < Devise::SessionsController
   # DeviseRecognisable::RecognisableSession table.
   def store_recognisable_details
     DeviseRecognisable::RecognisableSession.create!(
-      user: resource_class.find_by(email: params[resource_name][:email]),
+      recognisable: resource_class.find_by(email: params[resource_name][:email]),
       sign_in_ip: request.location.ip,
       sign_in_at: Time.now
     )
