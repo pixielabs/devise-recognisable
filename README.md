@@ -30,12 +30,21 @@ Or install it yourself as:
 
     $ gem install devise-recognisable
 
-Once you have Devise and `trackable` set up, add the `recognisable` module to your
-user model:
+Once you have Devise set up, add the `recognisable` module to your user model:
 
 <pre>
 devise :database_authenticatable, :registerable, :trackable, <b>:recognisable</b>
 </pre>
+
+And generate the RecogniseSession table. If you are are using Postgres or
+another database that supports the `inet` column type:
+
+    $ rails generate migration CreateRecogniseSessions user:references sign_in_ip:inet sign_in_at:datetime
+
+If you are are using SQLite or another database that doesn't support the `inet`
+column type, you can use `string`:
+
+    $ rails generate migration CreateRecogniseSessions user:references sign_in_ip:string sign_in_at:datetime
 
 ## Development
 

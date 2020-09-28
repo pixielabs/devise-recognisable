@@ -3,23 +3,26 @@ require 'geocoder'
 class DeviseRecognisable::SessionsController < Devise::SessionsController
   prepend_before_action :check_for_authentication_token, only: :new
   prepend_before_action :perform_ip_check, only: :create
+  append_after_action :store_recognisable_details, only: :create
  
   def perform_ip_check
     # Find the user
     self.resource = resource_class.find_by(email: params[resource_name][:email])
-    return unless self.resource && self.resource.last_sign_in_ip.present?
+    previous_session = Devise.ref('DeviseRecognisable::RecognisableSession').get.where(user_id: self.resource).last
+
+    return unless self.resource && previous_session.present?
 
     # Is the user's IP different to the last one?
     # Is it more than a certain distance from the last successful sign in?
     #
     # NOTE: Geocoder's location method might not be the safest?
     # See https://github.com/alexreisner/geocoder#geocoding-http-requests
-    last_sign_in = Geocoder.search(self.resource.last_sign_in_ip).first
+    last_sign_in = Geocoder.search(previous_session.sign_in_ip).first
     current_sign_in = Geocoder.search(request.location.ip).first
     # NOTE: looks like sometimes the current_sign_in isn't a real thing?
     distance = Geocoder::Calculations.distance_between(last_sign_in&.coordinates, current_sign_in&.coordinates)
 
-    if self.resource.last_sign_in_ip != request.location.ip or distance > Devise.max_ip_distance 
+    if previous_session.sign_in_ip != request.location.ip or distance > Devise.max_ip_distance
       # Don't sign the user in, return them to the sign in screen with a flash
       # message.
       set_flash_message(:alert, :send_new_ip_instructions)
@@ -43,5 +46,15 @@ class DeviseRecognisable::SessionsController < Devise::SessionsController
 
       sign_in self.resource
     end
+  end
+
+  # After the user has been signed in, we save the ip address in the
+  # DeviseRecognisable::RecognisableSession table.
+  def store_recognisable_details
+    DeviseRecognisable::RecognisableSession.create!(
+      user: resource_class.find_by(email: params[resource_name][:email]),
+      sign_in_ip: request.location.ip,
+      sign_in_at: Time.now
+    )
   end
 end

@@ -7,11 +7,6 @@ RSpec.feature "Sign in" do
   context 'as a user that has no last_sign_in_ip' do
     let!(:user) { FactoryBot.create :user }
 
-    before do
-      # Make sure the user has no last_sign_in_ip
-      user.update(last_sign_in_ip: nil)
-    end
-
     it 'works and does not send an email' do
       visit '/'
       expect(page).to have_content 'Welcome to my website'
@@ -50,9 +45,10 @@ RSpec.feature "Sign in" do
 
   context 'from a different IP' do
     let!(:user) { FactoryBot.create :user }
+    let!(:recognisable_session) { FactoryBot.create :recognisable_session, user: user }
 
     before do
-      user.update(last_sign_in_ip: 0)
+      recognisable_session.update(sign_in_ip: FFaker::Internet.ip_v4_address)
       visit '/'
       click_link 'Log in'
       fill_in 'Email', with: user.email
