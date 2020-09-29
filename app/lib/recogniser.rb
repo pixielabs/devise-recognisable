@@ -1,3 +1,5 @@
+# A Class that is responsible for recognising a request by comparing the request
+# to previous sign ins.
 class Recogniser
   @@required_scores = {
     relaxed: 0,
@@ -22,10 +24,10 @@ class Recogniser
       score += 1
     end
 
-    # Is the user's User Agent is different to the previous signin?
+    # Is the user's User Agent is different to the previous sign in?
     score += 1 if previous_session.user_agent == request.user_agent
 
-    # Is the user's Accept header is different to the previous signin?
+    # Is the user's Accept header is different to the previous sign in?
     score += 1 if previous_session.accept_header == request.headers["HTTP_ACCEPT"]
 
     score > @@required_scores[Devise.security_level]
