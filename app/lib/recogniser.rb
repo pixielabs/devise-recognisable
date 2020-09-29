@@ -15,11 +15,16 @@ class Recogniser
       score += 1
     end
 
-    # Is the user's User Agent different to the last one?
+    # Is the user's User Agent is different to the previous signin?
     if previous_session.user_agent == request.user_agent
       score += 1
     end
 
-    score > 1
+    # Is the user's Accept header is different to the previous signin?
+    if previous_session.accept_header == request.headers["HTTP_ACCEPT"]
+      score += 1
+    end
+
+    score > 2
   end
 end

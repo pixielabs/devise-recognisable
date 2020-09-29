@@ -5,6 +5,7 @@ class CreateRecognisableSessions < ActiveRecord::Migration[5.2]
       t.integer :recognisable_id
       t.string :sign_in_ip
       t.string :user_agent
+      t.string :accept_header
       t.datetime :sign_in_at
     end
     add_index :recognisable_sessions, [:recognisable_type, :recognisable_id], :name => 'recognisable_index'
