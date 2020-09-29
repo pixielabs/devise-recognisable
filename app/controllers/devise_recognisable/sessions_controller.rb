@@ -2,10 +2,10 @@ require 'geocoder'
 
 class DeviseRecognisable::SessionsController < Devise::SessionsController
   prepend_before_action :check_for_authentication_token, only: :new
-  prepend_before_action :perform_ip_check, only: :create
+  prepend_before_action :perform_recognition_check, only: :create
   append_after_action :store_recognisable_details, only: :create
  
-  def perform_ip_check
+  def perform_recognition_check
     # Find the user
     self.resource = resource_class.find_by(email: params[resource_name][:email])
     previous_session = Devise.ref('DeviseRecognisable::RecognisableSession').get
