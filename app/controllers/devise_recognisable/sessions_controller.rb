@@ -39,7 +39,8 @@ class DeviseRecognisable::SessionsController < Devise::SessionsController
       DeviseRecognisable::RecognisableSession.create!(
         recognisable: resource_class.find_by(email: self.resource.email),
         sign_in_ip: request.location.ip,
-        sign_in_at: Time.now
+        sign_in_at: Time.now,
+        user_agent: request.user_agent,
       )
     end
   end
@@ -50,7 +51,8 @@ class DeviseRecognisable::SessionsController < Devise::SessionsController
     DeviseRecognisable::RecognisableSession.create!(
       recognisable: resource_class.find_by(email: params[resource_name][:email]),
       sign_in_ip: request.location.ip,
-      sign_in_at: Time.now
+      sign_in_at: Time.now,
+      user_agent: request.user_agent,
     )
   end
 end
