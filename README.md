@@ -36,15 +36,10 @@ Once you have Devise set up, add the `recognisable` module to your user model:
 devise :database_authenticatable, :registerable, :trackable, <b>:recognisable</b>
 </pre>
 
-And generate the RecogniseSession table. If you are are using Postgres or
-another database that supports the `inet` column type:
+And generate the RecognisableSessions table.
 
-    $ rails generate migration CreateRecognisableSessions recognisable_type:string recognisable_id:integer sign_in_ip:inet sign_in_at:datetime
-
-If you are are using SQLite or another database that doesn't support the `inet`
-column type, you can use `string`:
-
-    $ rails generate migration CreateRecognisableSessions recognisable_type:string recognisable_id:integer sign_in_ip:string sign_in_at:datetime
+    $ rails generate devise_recognisable:install
+    $ rails db:migrate
 
 ## Development
 

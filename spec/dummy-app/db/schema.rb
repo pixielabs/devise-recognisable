@@ -10,7 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_07_122758) do
+ActiveRecord::Schema.define(version: 2020_09_29_111443) do
+
+  create_table "recognisable_sessions", force: :cascade do |t|
+    t.string "recognisable_type"
+    t.integer "recognisable_id"
+    t.string "sign_in_ip"
+    t.datetime "sign_in_at"
+    t.index ["recognisable_type", "recognisable_id"], name: "recognisable_index"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
