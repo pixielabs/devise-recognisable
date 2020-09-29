@@ -13,17 +13,7 @@ class DeviseRecognisable::SessionsController < Devise::SessionsController
 
     return unless self.resource && previous_session.present?
 
-    # Is the user's IP different to the last one?
-    # Is it more than a certain distance from the last successful sign in?
-    #
-    # NOTE: Geocoder's location method might not be the safest?
-    # See https://github.com/alexreisner/geocoder#geocoding-http-requests
-    last_sign_in = Geocoder.search(previous_session.sign_in_ip).first
-    current_sign_in = Geocoder.search(request.location.ip).first
-    # NOTE: looks like sometimes the current_sign_in isn't a real thing?
-    distance = Geocoder::Calculations.distance_between(last_sign_in&.coordinates, current_sign_in&.coordinates)
-
-    if previous_session.sign_in_ip != request.location.ip or distance > Devise.max_ip_distance
+    unless Recogniser.recognise?(request, previous_session)
       # Don't sign the user in, return them to the sign in screen with a flash
       # message.
       set_flash_message(:alert, :send_new_ip_instructions)

@@ -3,10 +3,20 @@ require 'rails_helper'
 RSpec.feature "Sign in" do
   let(:email) { FFaker::Internet.email }
   let(:password) { FFaker::Internet.password }
+  let!(:user) { FactoryBot.create :user }
+
+  let!(:user_agent) { 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36' }
+  let!(:recognisable_session_values) {{
+    recognisable_id: user.id,
+    recognisable_type: 'User',
+    user_agent: user_agent
+  }}
+
+  before do
+    Capybara.current_session.driver.header('User-Agent', user_agent)
+  end
 
   context 'as a user that has no last_sign_in_ip' do
-    let!(:user) { FactoryBot.create :user }
-
     it 'works and does not send an email' do
       visit '/'
       expect(page).to have_content 'Welcome to my website'
@@ -44,8 +54,7 @@ RSpec.feature "Sign in" do
   end
 
   context 'from a different IP' do
-    let!(:user) { FactoryBot.create :user }
-    let!(:recognisable_session) { FactoryBot.create :recognisable_session, recognisable_id: user.id, recognisable_type: 'User' }
+    let!(:recognisable_session) { FactoryBot.create :recognisable_session, recognisable_session_values }
 
     before do
       recognisable_session.update(sign_in_ip: FFaker::Internet.ip_v4_address)
@@ -68,6 +77,33 @@ RSpec.feature "Sign in" do
         expect(page).to have_content('Home sweet home')
       end
 
+    end
+
+    context 'from a device with a different User Agent' do
+      let!(:recognisable_session) { FactoryBot.create :recognisable_session, recognisable_session_values }
+      let!(:new_user_agent) { 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/605.1.15 (KHTML, like Gecko)' }
+
+      before do
+        recognisable_session.update!(user_agent: new_user_agent)
+        visit '/'
+        click_link 'Log in'
+        fill_in 'Email', with: user.email
+        fill_in 'Password', with: user.password
+        click_button 'Log in'
+      end
+
+      it 'does not log the user in' do
+        expect(page).to have_content I18n.t('devise.sessions.send_new_ip_instructions')
+        expect(page).to_not have_content('Home sweet home')
+      end
+
+      context 'visiting the link in the email' do
+        it 'logs the user in' do
+          open_email(user.email, with_subject: I18n.t('devise.mailer.new_ip.subject'))
+          visit_in_email('Log in')
+          expect(page).to have_content('Home sweet home')
+        end
+      end
     end
   end
 end
