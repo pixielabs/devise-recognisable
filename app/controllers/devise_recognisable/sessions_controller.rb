@@ -46,6 +46,11 @@ class DeviseRecognisable::SessionsController < Devise::SessionsController
       self.resource = resource_class.find token['id']
 
       sign_in self.resource
+      DeviseRecognisable::RecognisableSession.create!(
+        recognisable: resource_class.find_by(email: self.resource.email),
+        sign_in_ip: request.location.ip,
+        sign_in_at: Time.now
+      )
     end
   end
 
