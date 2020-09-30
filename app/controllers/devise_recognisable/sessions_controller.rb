@@ -8,10 +8,12 @@ class DeviseRecognisable::SessionsController < Devise::SessionsController
   def perform_ip_check
     # Find the user
     self.resource = resource_class.find_by(email: params[resource_name][:email])
-    previous_session = Devise.ref('DeviseRecognisable::RecognisableSession').get
-      .where( recognisable: self.resource ).last
+    return unless self.resource
 
-    return unless self.resource && previous_session.present?
+    previous_session = DeviseRecognisable::RecognisableSession
+      .where( recognisable: self.resource )
+      .order(created_at: :desc).first
+    return unless previous_session.present?
 
     # Is the user's IP different to the last one?
     # Is it more than a certain distance from the last successful sign in?
