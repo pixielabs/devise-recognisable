@@ -79,60 +79,59 @@ RSpec.feature "Sign in" do
         visit_in_email('Log in')
         expect(page).to have_content('Home sweet home')
       end
+    end
+  end
 
+  context 'from a device with a different User Agent' do
+    let!(:recognisable_session) { FactoryBot.create :recognisable_session, recognisable_session_values }
+    let!(:new_user_agent) { 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/605.1.15 (KHTML, like Gecko)' }
+
+    before do
+      recognisable_session.update!(user_agent: new_user_agent)
+      visit '/'
+      click_link 'Log in'
+      fill_in 'Email', with: user.email
+      fill_in 'Password', with: user.password
+      click_button 'Log in'
     end
 
-    context 'from a device with a different User Agent' do
-      let!(:recognisable_session) { FactoryBot.create :recognisable_session, recognisable_session_values }
-      let!(:new_user_agent) { 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/605.1.15 (KHTML, like Gecko)' }
-
-      before do
-        recognisable_session.update!(user_agent: new_user_agent)
-        visit '/'
-        click_link 'Log in'
-        fill_in 'Email', with: user.email
-        fill_in 'Password', with: user.password
-        click_button 'Log in'
-      end
-
-      it 'does not log the user in' do
-        expect(page).to have_content I18n.t('devise.sessions.send_new_ip_instructions')
-        expect(page).to_not have_content('Home sweet home')
-      end
-
-      context 'visiting the link in the email' do
-        it 'logs the user in' do
-          open_email(user.email, with_subject: I18n.t('devise.mailer.new_ip.subject'))
-          visit_in_email('Log in')
-          expect(page).to have_content('Home sweet home')
-        end
-      end
+    it 'does not log the user in' do
+      expect(page).to have_content I18n.t('devise.sessions.send_new_ip_instructions')
+      expect(page).to_not have_content('Home sweet home')
     end
 
-    context 'from a device with a different Accept header value' do
-      let!(:recognisable_session) { FactoryBot.create :recognisable_session, recognisable_session_values }
-      let!(:new_accept_header) { 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8' }
-
-      before do
-        recognisable_session.update!(accept_header: new_accept_header)
-        visit '/'
-        click_link 'Log in'
-        fill_in 'Email', with: user.email
-        fill_in 'Password', with: user.password
-        click_button 'Log in'
+    context 'visiting the link in the email' do
+      it 'logs the user in' do
+        open_email(user.email, with_subject: I18n.t('devise.mailer.new_ip.subject'))
+        visit_in_email('Log in')
+        expect(page).to have_content('Home sweet home')
       end
+    end
+  end
 
-      it 'does not log the user in' do
-        expect(page).to have_content I18n.t('devise.sessions.send_new_ip_instructions')
-        expect(page).to_not have_content('Home sweet home')
-      end
+  context 'from a device with a different Accept header value' do
+    let!(:recognisable_session) { FactoryBot.create :recognisable_session, recognisable_session_values }
+    let!(:new_accept_header) { 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8' }
 
-      context 'visiting the link in the email' do
-        it 'logs the user in' do
-          open_email(user.email, with_subject: I18n.t('devise.mailer.new_ip.subject'))
-          visit_in_email('Log in')
-          expect(page).to have_content('Home sweet home')
-        end
+    before do
+      recognisable_session.update!(accept_header: new_accept_header)
+      visit '/'
+      click_link 'Log in'
+      fill_in 'Email', with: user.email
+      fill_in 'Password', with: user.password
+      click_button 'Log in'
+    end
+
+    it 'does not log the user in' do
+      expect(page).to have_content I18n.t('devise.sessions.send_new_ip_instructions')
+      expect(page).to_not have_content('Home sweet home')
+    end
+
+    context 'visiting the link in the email' do
+      it 'logs the user in' do
+        open_email(user.email, with_subject: I18n.t('devise.mailer.new_ip.subject'))
+        visit_in_email('Log in')
+        expect(page).to have_content('Home sweet home')
       end
     end
   end
