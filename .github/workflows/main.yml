@@ -10,12 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Fetch the latest devise-recognisable commit
-        working-directory: ./spec/dummy-app
-        run: |
-          rm Gemfile.lock
-          gem install bundler
-          bundle install
       - uses: akhileshns/heroku-deploy@v3.5.6 
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
