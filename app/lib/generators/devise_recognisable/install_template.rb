@@ -4,7 +4,7 @@ class CreateRecognisableSessions < <%= "ActiveRecord::Migration[#{ActiveRecord::
       t.string  :recognisable_type
       t.integer :recognisable_id
       t.<%= ip_column %> :sign_in_ip
-      t.string  :sign_in_at
+      t.datetime  :sign_in_at
     end
     add_index :recognisable_sessions, [:recognisable_type, :recognisable_id], :name => 'recognisable_index'
   end
