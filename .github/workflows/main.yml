@@ -15,4 +15,4 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "devise-recognise-staging"
           heroku_email: ${{secrets.HEROKU_API_KEY}}
-          appdir: "spec/dummy_app"
+          appdir: "spec/dummy-app"
