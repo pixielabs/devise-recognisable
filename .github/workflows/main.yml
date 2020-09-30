@@ -10,8 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: |
-          cd spec/dummy-app
+      - name: Fetch the latest devise-recognisable commit
+        working-directory: ./spec/dummy-app
+        run: |
           rm Gemfile.lock
           gem install bundler
           bundle install
