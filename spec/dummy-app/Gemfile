@@ -37,7 +37,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'devise'
 
 # Add devise recognisable as a dependency, rather than requiring.
-gem 'devise-recognisable', path: '../..'
+gem 'devise-recognisable', git: 'https://github.com/pixielabs/devise-recognisable.git', branch: 'staging'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
