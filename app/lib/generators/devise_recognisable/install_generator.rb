@@ -8,7 +8,7 @@ module DeviseRecognisable
     class InstallGenerator < Rails::Generators::Base
       include Rails::Generators::Migration
 
-      source_root File.dirname(__FILE__)
+      source_root File.expand_path('templates', __dir__)
 
       # This method indicates the template that should be used by the generator. 
       def copy_migration
