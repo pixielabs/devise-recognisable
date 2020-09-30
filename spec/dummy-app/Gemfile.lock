@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/pixielabs/devise-recognisable.git
-  revision: 22877e008aaa93991a539f02406ef5c3435c37ce
+  revision: 0eb191277e40866ddf0d0289f58defed0bd745e4
   branch: staging
   specs:
     devise-recognisable (0.1.0)
