@@ -1,5 +1,7 @@
-PATH
-  remote: ../..
+GIT
+  remote: https://github.com/pixielabs/devise-recognisable.git
+  revision: e3c446ff1fb5bf6614c1deab28e282557def4c52
+  branch: staging
   specs:
     devise-recognisable (0.1.0)
       devise
@@ -98,7 +100,7 @@ GEM
       concurrent-ruby (~> 1.0)
     jbuilder (2.9.1)
       activesupport (>= 4.2.0)
-    jwt (2.2.1)
+    jwt (2.2.2)
     launchy (2.4.3)
       addressable (~> 2.3)
     listen (3.1.5)
