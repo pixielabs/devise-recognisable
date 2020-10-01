@@ -15,14 +15,19 @@ module DeviseRecognisable
         migration_template './install_template.rb', 'db/migrate/create_recognisable_sessions.rb'
       end
 
-      # Helper used in the template.
-      def migration_parent
-        Rails::VERSION::MAJOR == 4 ? 'ActiveRecord::Migration' : "ActiveRecord::Migration[#{ActiveRecord::Migration.current_version}]"
+      def ip_column
+        # Padded with spaces so it aligns nicely with the rest of the columns.
+        "%-8s" % (postgresql? ? "inet" : "string")
+      end
+
+      def postgresql?
+        config = ActiveRecord::Base.configurations[Rails.env]
+        config && config['adapter'] == 'postgresql'
       end
 
       private
 
-      # This required interface for Rails::Generators::Migration.
+      # This is a required interface for Rails::Generators::Migration.
       def self.next_migration_number(dirname)
         next_migration_number = current_migration_number(dirname) + 1
         if ::ActiveRecord::Base.timestamped_migrations

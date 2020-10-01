@@ -1,7 +1,7 @@
 class CreateRecognisableSessions < ActiveRecord::Migration[5.2]
   def change
     create_table :recognisable_sessions do |t|
-      t.string :recognisable_type
+      t.string  :recognisable_type
       t.integer :recognisable_id
       t.string :sign_in_ip
       t.string :user_agent

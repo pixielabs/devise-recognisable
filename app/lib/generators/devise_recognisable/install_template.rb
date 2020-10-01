@@ -1,11 +1,11 @@
-class CreateRecognisableSessions < <%= migration_parent %>
+class CreateRecognisableSessions < <%= "ActiveRecord::Migration[#{ActiveRecord::Migration.current_version}]" %>
   def change
     create_table :recognisable_sessions do |t|
-      t.string :recognisable_type
-      t.integer :recognisable_id
-      t.string :sign_in_ip
-      t.string :user_agent
-      t.string :accept_header
+      t.string   :recognisable_type
+      t.integer  :recognisable_id
+      t.<%= ip_column %> :sign_in_ip
+      t.string   :user_agent
+      t.string   :accept_header
       t.datetime :sign_in_at
     end
     add_index :recognisable_sessions, [:recognisable_type, :recognisable_id], :name => 'recognisable_index'
