@@ -8,10 +8,12 @@ class DeviseRecognisable::SessionsController < Devise::SessionsController
   def perform_recognition_check
     # Find the user
     self.resource = resource_class.find_by(email: params[resource_name][:email])
-    previous_sessions = Devise.ref('DeviseRecognisable::RecognisableSession').get
-      .where( recognisable: self.resource )
+    return unless self.resource
 
-    return unless self.resource && previous_sessions.any?
+    previous_sessions = DeviseRecognisable::RecognisableSession
+      .where( recognisable: self.resource )
+      .order(created_at: :desc)
+    return unless previous_sessions.any?
 
     unless Recogniser.recognise?(request, previous_sessions)
       # Don't sign the user in, return them to the sign in screen with a flash

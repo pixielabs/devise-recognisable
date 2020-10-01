@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_29_150408) do
+ActiveRecord::Schema.define(version: 2020_09_30_175344) do
 
   create_table "recognisable_sessions", force: :cascade do |t|
     t.string "recognisable_type"
