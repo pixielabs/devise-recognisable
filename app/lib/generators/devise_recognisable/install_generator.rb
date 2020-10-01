@@ -17,7 +17,7 @@ module DeviseRecognisable
 
       def ip_column
         # Padded with spaces so it aligns nicely with the rest of the columns.
-        "%-7s" % (postgresql? ? "inet" : "string")
+        "%-8s" % (postgresql? ? "inet" : "string")
       end
 
       def postgresql?
