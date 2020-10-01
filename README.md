@@ -48,6 +48,13 @@ release a new version, update the version number in `version.rb`, and then run
 `bundle exec rake release`, which will create a git tag for the version, push
 git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
+## Deploying to Staging
+
+If you want to deploy to staging, first merge your changes into the staging
+branch and push them to github. Then run `bundle update` and commit the new
+`Gemfile.lock`. Pushing the `Gemfile.lock` will trigger a deploy that includes
+your latest changes.
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at
