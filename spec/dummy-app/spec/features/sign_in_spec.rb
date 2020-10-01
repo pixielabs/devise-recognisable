@@ -7,11 +7,6 @@ RSpec.feature "Sign in" do
   context 'as a user that has no last_sign_in_ip' do
     let!(:user) { FactoryBot.create :user }
 
-    before do
-      # Make sure the user has no last_sign_in_ip
-      user.update(last_sign_in_ip: nil)
-    end
-
     it 'works and does not send an email' do
       visit '/'
       expect(page).to have_content 'Welcome to my website'
@@ -46,13 +41,34 @@ RSpec.feature "Sign in" do
       click_button 'Log in'
       expect(page).to have_content 'Home sweet home'
     end
+
+    it 'creates a new DeviseRecognisable::RecognisableSession on successful sign in' do
+      expect {
+        visit '/'
+        click_link 'Log in'
+        fill_in 'Email', with: email
+        fill_in 'Password', with: password
+        click_button 'Log in'
+      }.to change { DeviseRecognisable::RecognisableSession.count }.from(0).to(1)
+    end
+
+    it "doesn't create a new DeviseRecognisable::RecognisableSession on unsuccessful sign in" do
+      expect {
+        visit '/'
+        click_link 'Log in'
+        fill_in 'Email', with: email
+        fill_in 'Password', with: FFaker::Internet.password
+        click_button 'Log in'
+      }.not_to change { DeviseRecognisable::RecognisableSession.count }
+    end
   end
 
   context 'from a different IP' do
     let!(:user) { FactoryBot.create :user }
+    let!(:recognisable_session) { FactoryBot.create :recognisable_session, recognisable_id: user.id, recognisable_type: 'User' }
 
     before do
-      user.update(last_sign_in_ip: 0)
+      recognisable_session.update(sign_in_ip: FFaker::Internet.ip_v4_address)
       visit '/'
       click_link 'Log in'
       fill_in 'Email', with: user.email
@@ -72,6 +88,12 @@ RSpec.feature "Sign in" do
         expect(page).to have_content('Home sweet home')
       end
 
+      it 'creates a new DeviseRecognisable::RecognisableSession on sucessfull sign in' do
+        expect {
+          open_email(user.email, with_subject: I18n.t('devise.mailer.new_ip.subject'))
+          visit_in_email('Log in')
+        }.to change { DeviseRecognisable::RecognisableSession.count }.from(1).to(2)
+      end
     end
   end
 end

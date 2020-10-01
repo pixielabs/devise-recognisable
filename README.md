@@ -11,9 +11,6 @@ You will need a Rails app with Devise successfully set up. See
 [Devise's documentation](https://github.com/plataformatec/devise/) for help
 setting up Devise.
 
-You also need the [trackable module](https://www.rubydoc.info/github/plataformatec/devise/master/Devise/Models/Trackable)
-if you haven’t already got that. Devise have [instructions for adding trackable to users](https://github.com/plataformatec/devise/wiki/How-To:-Add-:trackable-to-Users).
-
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -30,12 +27,16 @@ Or install it yourself as:
 
     $ gem install devise-recognisable
 
-Once you have Devise and `trackable` set up, add the `recognisable` module to your
-user model:
+Once you have Devise set up, add the `recognisable` module to your user model:
 
 <pre>
-devise :database_authenticatable, :registerable, :trackable, <b>:recognisable</b>
+devise :database_authenticatable, :registerable, <b>:recognisable</b>
 </pre>
+
+And generate the RecognisableSessions table.
+
+    $ rails generate devise_recognisable:install
+    $ rails db:migrate
 
 ## Development
 
