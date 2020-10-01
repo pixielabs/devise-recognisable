@@ -1,6 +1,6 @@
 # A Class that is responsible for recognising a request by comparing the request
 # to previous sign ins.
-class Recogniser
+class Guard
   @@required_scores = {
     relaxed: 0,
     normal: 1,
@@ -20,16 +20,7 @@ class Recogniser
 
     # Is the user's IP different to the last one?
     # Is it more than a certain distance from the last successful sign in?
-    #
-    # NOTE: Geocoder's location method might not be the safest?
-    # See https://github.com/alexreisner/geocoder#geocoding-http-requests
-    last_sign_in = Geocoder.search(session.sign_in_ip).first
-    current_sign_in = Geocoder.search(request.location.ip).first
-    # NOTE: looks like sometimes the current_sign_in isn't a real thing?
-    distance = Geocoder::Calculations.distance_between(last_sign_in&.coordinates, current_sign_in&.coordinates)
-    if session.sign_in_ip == request.location.ip or distance < Devise.max_ip_distance
-      score += 1
-    end
+    score += 1 if compare_ip_addresses(request.location.ip, session.sign_in_ip)
 
     # Is the user's User Agent is different to the previous sign in?
     score += 1 if session.user_agent == request.user_agent
@@ -39,4 +30,21 @@ class Recogniser
 
     return score
   end
+
+  # Method to check if the ip addresses are similar. Takes a request_address
+  # and a session_address and returns a bool
+  def self.compare_ip_addresses(request_address, session_address)
+    return true if session_address == request_address
+    
+    # NOTE: Geocoder's location method might not be the safest?
+    # See https://github.com/alexreisner/geocoder#geocoding-http-requests
+    last_sign_in = Geocoder.search(session_address).first
+    current_sign_in = Geocoder.search(request_address).first
+    
+    # NOTE: looks like sometimes the current_sign_in isn't a real thing?
+    distance = Geocoder::Calculations.distance_between(last_sign_in&.coordinates, current_sign_in&.coordinates)
+    
+    distance < Devise.max_ip_distance
+  end
+
 end

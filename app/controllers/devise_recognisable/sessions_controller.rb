@@ -15,7 +15,9 @@ class DeviseRecognisable::SessionsController < Devise::SessionsController
       .order(created_at: :desc)
     return if previous_sessions.none?
 
-    unless Recogniser.recognise?(request, previous_sessions)
+    guard = Devise.debug_logs ? DebugGuard : Guard
+
+    unless guard.recognise?(request, previous_sessions)
       # Don't sign the user in, return them to the sign in screen with a flash
       # message.
       set_flash_message(:alert, :send_new_ip_instructions)

@@ -1,0 +1,237 @@
+{
+  "request_id": "9bb0b301-340d-43f0-8b62-2e1d5da8576d",
+  "user_id": 1,
+  "user_type": "User",
+  "score": 2,
+  "failures": {
+    "ip_address": {
+      "request_value": "127.0.0.1",
+      "session_value": "221.237.128.194"
+    }
+  },
+  "time": "2020-10-01 13:50:02 +0100"
+}{
+  "request_id": "62c304e7-cbd5-49b4-ac7d-7951b108913c",
+  "user_id": 1,
+  "user_type": "User",
+  "score": 2,
+  "failures": {
+    "ip_address": {
+      "request_value": "127.0.0.1",
+      "session_value": "208.174.150.14"
+    }
+  },
+  "time": "2020-10-01 13:50:02 +0100"
+}{
+  "request_id": "9608e085-3759-4405-9cfc-5ea1bcf6d280",
+  "user_id": 1,
+  "user_type": "User",
+  "score": 2,
+  "failures": {
+    "ip_address": {
+      "request_value": "127.0.0.1",
+      "session_value": "156.70.188.22"
+    }
+  },
+  "time": "2020-10-01 13:50:02 +0100"
+}{
+  "request_id": "319741ba-b6c8-43ba-877f-06177ecd659e",
+  "user_id": 1,
+  "user_type": "User",
+  "score": 2,
+  "failures": {
+    "ip_address": {
+      "request_value": "127.0.0.1",
+      "session_value": "178.4.108.126"
+    }
+  },
+  "time": "2020-10-01 14:00:08 +0100"
+}{
+  "request_id": "9cefd70e-07b1-43fa-b5db-d04f105cbebe",
+  "user_id": 1,
+  "user_type": "User",
+  "score": 2,
+  "failures": {
+    "ip_address": {
+      "request_value": "127.0.0.1",
+      "session_value": "84.252.196.240"
+    }
+  },
+  "time": "2020-10-01 14:00:08 +0100"
+}{
+  "request_id": "3df64e19-7029-48a7-8d61-32d424b97aff",
+  "user_id": 1,
+  "user_type": "User",
+  "score": 2,
+  "failures": {
+    "ip_address": {
+      "request_value": "127.0.0.1",
+      "session_value": "85.158.64.250"
+    }
+  },
+  "time": "2020-10-01 14:00:08 +0100"
+}{
+  "request_id": "a393e8c5-fed1-41f5-92ce-c05d588173ad",
+  "user_id": 1,
+  "user_type": "User",
+  "score": 1,
+  "failures": {
+    "ip_address": {
+      "request_value": "127.0.0.1",
+      "session_value": "120.121.227.86"
+    },
+    "user_agent": {
+      "request_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36",
+      "session_value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/605.1.15 (KHTML, like Gecko)"
+    }
+  },
+  "time": "2020-10-01 14:00:08 +0100"
+}{
+  "request_id": "b3017656-b11a-4abe-bb81-0415288d53b7",
+  "user_id": 1,
+  "user_type": "User",
+  "score": 1,
+  "failures": {
+    "ip_address": {
+      "request_value": "127.0.0.1",
+      "session_value": "204.89.226.231"
+    },
+    "user_agent": {
+      "request_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36",
+      "session_value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/605.1.15 (KHTML, like Gecko)"
+    }
+  },
+  "time": "2020-10-01 14:00:09 +0100"
+}{
+  "request_id": "d2e7fec0-7f92-4876-904e-1e5d376ca1b2",
+  "user_id": 1,
+  "user_type": "User",
+  "score": 1,
+  "failures": {
+    "ip_address": {
+      "request_value": "127.0.0.1",
+      "session_value": "234.218.38.53"
+    },
+    "accept_header": {
+      "request_value": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+      "session_value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8"
+    }
+  },
+  "time": "2020-10-01 14:00:09 +0100"
+}{
+  "request_id": "6d0cbb5b-7e56-41e7-8179-40bc11d7250b",
+  "user_id": 1,
+  "user_type": "User",
+  "score": 1,
+  "failures": {
+    "ip_address": {
+      "request_value": "127.0.0.1",
+      "session_value": "0.114.74.36"
+    },
+    "accept_header": {
+      "request_value": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+      "session_value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8"
+    }
+  },
+  "time": "2020-10-01 14:00:09 +0100"
+}{
+  "request_id": "e8d8a0a8-dbe0-4459-88be-29c397e9bcfd",
+  "user_id": 1,
+  "user_type": "User",
+  "score": 2,
+  "failures": {
+    "ip_address": {
+      "request_value": "127.0.0.1",
+      "session_value": "253.190.0.185"
+    }
+  },
+  "time": "2020-10-01 14:00:38 +0100"
+}{
+  "request_id": "52c85546-fbd7-4099-b464-d596ba6cd625",
+  "user_id": 1,
+  "user_type": "User",
+  "score": 2,
+  "failures": {
+    "ip_address": {
+      "request_value": "127.0.0.1",
+      "session_value": "8.224.66.73"
+    }
+  },
+  "time": "2020-10-01 14:00:38 +0100"
+}{
+  "request_id": "3805ce11-2fa8-4bb6-a3a9-bc29aaf249ce",
+  "user_id": 1,
+  "user_type": "User",
+  "score": 2,
+  "failures": {
+    "ip_address": {
+      "request_value": "127.0.0.1",
+      "session_value": "73.56.33.70"
+    }
+  },
+  "time": "2020-10-01 14:00:39 +0100"
+}{
+  "request_id": "182523bd-96b5-4108-9be0-61e988418edb",
+  "user_id": 1,
+  "user_type": "User",
+  "score": 1,
+  "failures": {
+    "ip_address": {
+      "request_value": "127.0.0.1",
+      "session_value": "5.162.24.210"
+    },
+    "user_agent": {
+      "request_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36",
+      "session_value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/605.1.15 (KHTML, like Gecko)"
+    }
+  },
+  "time": "2020-10-01 14:00:39 +0100"
+}{
+  "request_id": "91d6a382-b022-4f31-8d22-d4bbefe748de",
+  "user_id": 1,
+  "user_type": "User",
+  "score": 1,
+  "failures": {
+    "ip_address": {
+      "request_value": "127.0.0.1",
+      "session_value": "71.220.190.115"
+    },
+    "user_agent": {
+      "request_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36",
+      "session_value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/605.1.15 (KHTML, like Gecko)"
+    }
+  },
+  "time": "2020-10-01 14:00:39 +0100"
+}{
+  "request_id": "5471a870-2541-4fb7-94d2-aa2d42df4cf4",
+  "user_id": 1,
+  "user_type": "User",
+  "score": 1,
+  "failures": {
+    "ip_address": {
+      "request_value": "127.0.0.1",
+      "session_value": "55.45.123.213"
+    },
+    "accept_header": {
+      "request_value": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+      "session_value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8"
+    }
+  },
+  "time": "2020-10-01 14:00:39 +0100"
+}{
+  "request_id": "4e747bc9-29c1-462d-8318-046ff07e69fa",
+  "user_id": 1,
+  "user_type": "User",
+  "score": 1,
+  "failures": {
+    "ip_address": {
+      "request_value": "127.0.0.1",
+      "session_value": "90.231.205.93"
+    },
+    "accept_header": {
+      "request_value": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+      "session_value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8"
+    }
+  },
+  "time": "2020-10-01 14:00:39 +0100"
+}

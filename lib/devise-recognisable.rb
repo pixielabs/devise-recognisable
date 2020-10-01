@@ -32,6 +32,11 @@ module Devise
   #   config.security_level = :strict
   @@security_level = :normal
 
+  # Private: Debug route. When a request's features aren't recognised, we write
+  # the request details to a logs file. This should **not** be set to true in
+  # production.
+  mattr_accessor :debug_logs
+  @@debug_logs = false
 end
 
 Devise.add_module :recognisable, model: 'devise-recognisable/model'
