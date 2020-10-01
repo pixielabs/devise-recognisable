@@ -41,7 +41,7 @@ class Guard
 
   # Method to check if the ip addresses are similar. Takes a session_address
   # and returns a bool
-  def self.compare_ip_addresses(session_address)
+  def compare_ip_addresses(session_address)
     return true if session_address == @request.location.ip
     
     # NOTE: Geocoder's location method might not be the safest?
