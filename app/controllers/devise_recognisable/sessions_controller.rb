@@ -13,7 +13,7 @@ class DeviseRecognisable::SessionsController < Devise::SessionsController
     previous_sessions = DeviseRecognisable::RecognisableSession
       .where( recognisable: self.resource )
       .order(created_at: :desc)
-    return unless previous_sessions.any?
+    return if previous_sessions.none?
 
     unless Recogniser.recognise?(request, previous_sessions)
       # Don't sign the user in, return them to the sign in screen with a flash
