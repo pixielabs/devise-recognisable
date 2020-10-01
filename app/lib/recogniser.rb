@@ -9,8 +9,9 @@ class Recogniser
 
   # Checks the current request against details from previous sign ins.
   def self.recognise?(request, previous_sessions)
-    scores = previous_sessions.map { |session| calculate_score_for_session(request, session) }
-    scores.max > @@required_scores[Devise.security_level]
+    previous_sessions.any? do |session|
+      calculate_score_for_session(request, session) > @@required_scores[Devise.security_level]
+    end
   end
 
   # Calculates the request's score against an individual RecognisableSession.
