@@ -49,6 +49,11 @@ release a new version, update the version number in `version.rb`, and then run
 `bundle exec rake release`, which will create a git tag for the version, push
 git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
+## Debug Mode
+
+We use Rollbar to report unrecognised requests in Debug mode. If you are running
+devise_recognise in debug mode, you will need to run `gem install rollbar`.
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at
