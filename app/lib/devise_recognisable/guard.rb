@@ -21,7 +21,7 @@ class DeviseRecognisable::Guard
     previous_sessions.each do |session|
       score = calculate_score_for session
 
-      # If the session matchs the request, the method returns true.
+      # If the session matches the request, the method returns true.
       return true if score > @@required_scores[Devise.security_level]
 
       # If the session does not match the request but does have a higher score
