@@ -69,7 +69,7 @@ class DeviseRecognisable::Guard
     distance < Devise.max_ip_distance
   end
 
-  # Debug mode only: Returns a results object that contains the relevant
+  # debug or info_only modes: Returns a results object that contains the relevant
   # information on which conditions failed.
   def failures
     failures = {
