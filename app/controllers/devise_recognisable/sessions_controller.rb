@@ -12,11 +12,10 @@ class DeviseRecognisable::SessionsController < Devise::SessionsController
 
     previous_sessions = DeviseRecognisable::RecognisableSession
       .where( recognisable: self.resource )
-      .order(created_at: :desc)
     return if previous_sessions.none?
 
-    guard = DeviseRecognisable::Guard.with(request)
-    unless guard.recognise?(previous_sessions)
+    guard = DeviseRecognisable::Guard.with(previous_sessions)
+    unless guard.recognise?(request)
       # Don't sign the user in, return them to the sign in screen with a flash
       # message.
       set_flash_message(:alert, :send_new_ip_instructions)

@@ -7,18 +7,19 @@ class DeviseRecognisable::Guard
     strict: 2
   }
 
-  def self.with(request)
-    self.new(request)
+  def self.with(previous_sessions)
+    self.new(previous_sessions)
   end
 
-  def initialize(request)
-    @request = request
+  def initialize(previous_sessions)
+    @previous_sessions = previous_sessions
     @closest_match = nil
   end
 
   # Checks the current request against details from previous sign ins.
-  def recognise?(previous_sessions)
-    previous_sessions.each do |session|
+  def recognise?(request)
+    @request = request
+    @previous_sessions.each do |session|
       score = calculate_score_for session
 
       # If the session matches the request, the method returns true.
@@ -40,14 +41,14 @@ class DeviseRecognisable::Guard
   def calculate_score_for(session)
     score = 0
 
-    # Is the user's IP different to the last one?
-    # Is it more than a certain distance from the last successful sign in?
+    # Is the requests's IP different to the session's?
+    # Is it more than a certain distance from the session's IP address?
     score += 1 if compare_ip_addresses(session.sign_in_ip)
 
-    # Is the user's User Agent is different to the previous sign in?
+    # Is the request's User Agent different to the session's sign in?
     score += 1 if session.user_agent == @request.user_agent
 
-    # Is the user's Accept header is different to the previous sign in?
+    # Is the request's Accept header different to the previous sign in?
     score += 1 if session.accept_header == @request.headers["HTTP_ACCEPT"]
 
     return score
@@ -76,36 +77,30 @@ class DeviseRecognisable::Guard
       request_id: @request.request_id,
       user_id: @closest_match[:session].recognisable_id,
       user_type: @closest_match[:session].recognisable_type,
-      score: 0,
+      score: @closest_match[:score],
       failures: {},
       time: Time.now
     }
 
-    # Is the user's IP different to the last one?
-    # Is it more than a certain distance from the last successful sign in?
-    if compare_ip_addresses(@closest_match[:session].sign_in_ip)
-      failures[:score] += 1
-    else
+    # Is the requests's IP different to the session's?
+    # Is it more than a certain distance from the session's IP address?
+    unless compare_ip_addresses(@closest_match[:session].sign_in_ip)
       failures[:failures][:ip_address] = {
         request_value: @request.location.ip,
         session_value: @closest_match[:session].sign_in_ip
       }
     end
 
-    # Is the user's User Agent is different to the previous sign in?
-    if @closest_match[:session].user_agent == @request.user_agent
-      failures[:score] += 1
-    else
+    # Is the request's User Agent different to the session's sign in?
+    unless @closest_match[:session].user_agent == @request.user_agent
       failures[:failures][:user_agent] = {
         request_value: @request.user_agent,
         session_value: @closest_match[:session].user_agent
       }
     end
 
-    # Is the user's Accept header is different to the previous sign in?
-    if @closest_match[:session].accept_header == @request.headers["HTTP_ACCEPT"]
-      failures[:score] += 1
-    else
+    # Is the request's Accept header different to the previous sign in?
+    unless @closest_match[:session].accept_header == @request.headers["HTTP_ACCEPT"]
       failures[:failures][:accept_header] = {
         request_value: @request.headers["HTTP_ACCEPT"],
         session_value: @closest_match[:session].accept_header
