@@ -52,7 +52,7 @@ git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygem
 ## Debug Mode
 
 We use Rollbar to report unrecognised requests in Debug mode. If you are running
-devise_recognise in debug mode, you will need to run `gem install rollbar`.
+devise_recognisable in debug mode, you will need to run `gem install rollbar`.
 
 To run DeviseRecognisable in debug mode, you need to add the following line
 to your app's Devise initializer file, `./config/initializers/devise.rb`.
