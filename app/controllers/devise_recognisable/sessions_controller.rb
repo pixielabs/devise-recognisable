@@ -12,12 +12,11 @@ class DeviseRecognisable::SessionsController < Devise::SessionsController
 
     previous_sessions = DeviseRecognisable::RecognisableSession
       .where( recognisable: self.resource )
-      .order(created_at: :desc)
     return if previous_sessions.none?
 
-    guard = DeviseRecognisable::Guard.with(request)
+    guard = DeviseRecognisable::Guard.with(previous_sessions)
 
-    unless guard.recognise?(previous_sessions)
+    unless guard.recognise?(request)
       # Skip if running in info_only mode
       unless Devise.info_only
         # Don't sign the user in, return them to the sign in screen with a flash
