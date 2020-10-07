@@ -38,6 +38,20 @@ And generate the RecognisableSessions table.
     $ rails generate devise_recognisable:install
     $ rails db:migrate
 
+## Security level
+
+You can configure the security level of DeviseRecognisable to `:strict`,
+`:normal` or `:relaxed` (default: :normal).
+
+`:strict` - requires users to sign in unless all the recognisable details of the
+request match the previous signin.
+
+`:normal` - requires users to sign in if more than 1 of the recognisable details
+of the request match the previous signin.
+
+`:relaxed` - requires users to sign in if more than 2 of the recognisable details
+of the request match the previous signin.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run
