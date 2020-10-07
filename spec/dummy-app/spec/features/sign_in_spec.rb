@@ -79,32 +79,63 @@ RSpec.feature "Sign in" do
   context 'from a different IP' do
     let!(:recognisable_session) { FactoryBot.create :recognisable_session, recognisable_session_values }
 
-    before do
-      recognisable_session.update(sign_in_ip: FFaker::Internet.ip_v4_address)
-      visit '/'
-      click_link 'Log in'
-      fill_in 'Email', with: user.email
-      fill_in 'Password', with: user.password
-      click_button 'Log in'
-    end
-
-    it 'does not log the user in' do
-      expect(page).to have_content I18n.t('devise.sessions.send_new_ip_instructions')
-      expect(page).to_not have_content('Home sweet home')
-    end
-
-    context 'visiting the link in the email' do
-      it 'logs the user in' do
-        open_email(user.email, with_subject: I18n.t('devise.mailer.new_ip.subject'))
-        visit_in_email('Log in')
-        expect(page).to have_content('Home sweet home')
+    context 'with Devise.debug_mode set to false' do
+      before do
+        recognisable_session.update(sign_in_ip: FFaker::Internet.ip_v4_address)
+        visit '/'
+        click_link 'Log in'
+        fill_in 'Email', with: user.email
+        fill_in 'Password', with: user.password
+        click_button 'Log in'
       end
 
-      it 'creates a new DeviseRecognisable::RecognisableSession on sucessfull sign in' do
-        expect {
+      it 'does not log the user in' do
+        expect(page).to have_content I18n.t('devise.sessions.send_new_ip_instructions')
+        expect(page).to_not have_content('Home sweet home')
+      end
+
+      context 'visiting the link in the email' do
+        it 'logs the user in' do
           open_email(user.email, with_subject: I18n.t('devise.mailer.new_ip.subject'))
           visit_in_email('Log in')
-        }.to change { DeviseRecognisable::RecognisableSession.count }.from(1).to(2)
+          expect(page).to have_content('Home sweet home')
+        end
+
+        it 'creates a new DeviseRecognisable::RecognisableSession on sucessfull sign in' do
+          expect {
+            open_email(user.email, with_subject: I18n.t('devise.mailer.new_ip.subject'))
+            visit_in_email('Log in')
+          }.to change { DeviseRecognisable::RecognisableSession.count }.from(1).to(2)
+        end
+      end
+    end
+
+    context 'with Devise.debug_mode set to true' do
+      let!(:new_ip) { FFaker::Internet.ip_v4_address }
+      before do
+        Devise.debug_mode = true
+        Rails.env = 'production'
+        recognisable_session.update(sign_in_ip: new_ip)
+      end
+
+      it 'send a debug message to Rollbar' do
+        expect(Rollbar).to receive(:debug)
+        .with(hash_including(
+          :failures=> {:ip_address=>{:request_value=>"127.0.0.1", :session_value=>new_ip}},
+          :score=>2,
+          :user_id=>1,
+          :user_type=>"User"
+          ), "Unrecognised request")
+        visit '/'
+        click_link 'Log in'
+        fill_in 'Email', with: user.email
+        fill_in 'Password', with: user.password
+        click_button 'Log in'
+      end
+
+      after do
+        Devise.debug_mode = false
+        Rails.env = 'test'
       end
     end
   end

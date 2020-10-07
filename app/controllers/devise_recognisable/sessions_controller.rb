@@ -12,10 +12,10 @@ class DeviseRecognisable::SessionsController < Devise::SessionsController
 
     previous_sessions = DeviseRecognisable::RecognisableSession
       .where( recognisable: self.resource )
-      .order(created_at: :desc)
     return if previous_sessions.none?
 
-    unless Recogniser.with(request).recognise?(previous_sessions)
+    guard = DeviseRecognisable::Guard.with(previous_sessions)
+    unless guard.recognise?(request)
       # Don't sign the user in, return them to the sign in screen with a flash
       # message.
       set_flash_message(:alert, :send_new_ip_instructions)
@@ -24,6 +24,12 @@ class DeviseRecognisable::SessionsController < Devise::SessionsController
       # Send an email to the user with a sign in link containing a unique
       # token that is valid for 5 minutes.
       resource_class.send_new_ip_email(resource_params)
+
+      # Debug mode only
+      if Devise.debug_mode && Rails.env.production?
+        require 'rollbar'
+        Rollbar.debug(guard.failures, 'Unrecognised request')
+      end
     end
   end
 

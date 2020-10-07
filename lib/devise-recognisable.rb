@@ -16,7 +16,7 @@ module Devise
   #
   #   config.max_ip_distance = 50 # => Sign in attempts from IPs further than
   #   50 miles from the last signin will need to log in via email.
-  mattr_accessor :max_ip_distance, :security_level
+  mattr_accessor :max_ip_distance
   @@max_ip_distance = 100
 
   # Public: Security level set the strictness of Devise Recognisable (default: :normal).
@@ -30,8 +30,14 @@ module Devise
   # Set this in the Devise configuration file (in config/initializers/devise.rb).
   #
   #   config.security_level = :strict
+  mattr_accessor :security_level
   @@security_level = :normal
 
+  # Debug: Debug mode. When a request's features aren't recognised, we write
+  # the request details to a logs file. This should __not__ be set to true in
+  # production.
+  mattr_accessor :debug_mode
+  @@debug_mode = false
 end
 
 Devise.add_module :recognisable, model: 'devise-recognisable/model'

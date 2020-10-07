@@ -49,6 +49,21 @@ release a new version, update the version number in `version.rb`, and then run
 `bundle exec rake release`, which will create a git tag for the version, push
 git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
+## Debug Mode
+
+We use Rollbar to report unrecognised requests in Debug mode. If you are running
+devise_recognisable in debug mode, you will need to run `gem install rollbar`.
+
+To run DeviseRecognisable in debug mode, you need to add the following line
+to your app's Devise initializer file, `./config/initializers/devise.rb`.
+
+```ruby
+config.debug_mode = true
+```
+
+_N.B. Debug mode only works in a production environment, so to actually log the
+output to Rollbar you will need to deploy your app._
+
 ## Deploying to Staging
 
 If you want to deploy to staging, first merge your changes into the staging
