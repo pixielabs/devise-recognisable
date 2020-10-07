@@ -30,7 +30,7 @@ class DeviseRecognisable::SessionsController < Devise::SessionsController
       end
 
       # debug or info_only mode
-      if (Devise.debug_mode || Devise.info_only) && Rails.env.production?
+      if (Devise.debug_mode || Devise.info_only) && (Rails.env.production? || Rails.env.staging?)
         require 'rollbar'
         Rollbar.debug(guard.failures, 'Unrecognised request')
       end
