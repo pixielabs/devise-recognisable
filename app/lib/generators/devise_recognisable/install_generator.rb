@@ -12,7 +12,7 @@ module DeviseRecognisable
 
       # This method indicates the template that should be used by the generator. 
       def copy_migration
-        migration_template './install_template.rb', 'db/migrate/create_recognisable_sessions.rb'
+        migration_template './install_template.rb.erb', 'db/migrate/create_recognisable_sessions.rb'
       end
 
       def ip_column
