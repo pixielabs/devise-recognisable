@@ -64,6 +64,13 @@ config.debug_mode = true
 _N.B. Debug mode only works in a production environment, so to actually log the
 output to Rollbar you will need to deploy your app._
 
+## Deploying to Staging
+
+If you want to deploy to staging, first merge your changes into the staging
+branch and push them to github. Then run `bundle update` and commit the new
+`Gemfile.lock`. Pushing the `Gemfile.lock` will trigger a deploy that includes
+your latest changes.
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at
