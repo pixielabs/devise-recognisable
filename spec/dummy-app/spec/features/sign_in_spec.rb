@@ -162,4 +162,39 @@ RSpec.feature "Sign in" do
       end
     end
   end
+
+  context 'with multiple different RecognisableSessions' do
+    let!(:different_user_agent) { 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/605.1.15 (KHTML, like Gecko)' }
+    let!(:different_accept_header) { 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8' }
+    let!(:different_recognisable_session_values) {{
+      recognisable_id: user.id,
+      recognisable_type: 'User',
+      user_agent: different_user_agent,
+      accept_header: different_accept_header
+    }}
+
+    before do
+      # This creates a recognisable session.
+      visit '/'
+      click_link 'Log in'
+      fill_in 'Email', with: user.email
+      fill_in 'Password', with: user.password
+      click_button 'Log in'
+      click_link 'Log out'
+
+      # Create a recognisable session from a different device.
+      FactoryBot.create :recognisable_session, different_recognisable_session_values
+    end
+
+    it 'can match a session other than the most recent and lets the user in' do
+      visit '/'
+      expect(page).to have_content 'Welcome to my website'
+      click_link 'Log in'
+      fill_in 'Email', with: user.email
+      fill_in 'Password', with: user.password
+      click_button 'Log in'
+      expect(page).to have_content 'Home sweet home'
+      expect(page).to have_content('Signed in successfully')
+    end
+  end
 end

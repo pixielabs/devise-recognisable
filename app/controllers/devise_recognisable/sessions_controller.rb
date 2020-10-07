@@ -10,12 +10,12 @@ class DeviseRecognisable::SessionsController < Devise::SessionsController
     self.resource = resource_class.find_by(email: params[resource_name][:email])
     return unless self.resource
 
-    previous_session = DeviseRecognisable::RecognisableSession
+    previous_sessions = DeviseRecognisable::RecognisableSession
       .where( recognisable: self.resource )
-      .order(created_at: :desc).first
-    return unless previous_session.present?
+      .order(created_at: :desc)
+    return if previous_sessions.none?
 
-    unless Recogniser.recognise?(request, previous_session)
+    unless Recogniser.with(request).recognise?(previous_sessions)
       # Don't sign the user in, return them to the sign in screen with a flash
       # message.
       set_flash_message(:alert, :send_new_ip_instructions)
