@@ -15,18 +15,22 @@ class DeviseRecognisable::SessionsController < Devise::SessionsController
     return if previous_sessions.none?
 
     guard = DeviseRecognisable::Guard.with(previous_sessions)
+
     unless guard.recognise?(request)
-      # Don't sign the user in, return them to the sign in screen with a flash
-      # message.
-      set_flash_message(:alert, :send_new_ip_instructions)
-      redirect_to new_session_path(resource_class)
+      # Skip if running in info_only mode
+      unless Devise.info_only
+        # Don't sign the user in, return them to the sign in screen with a flash
+        # message.
+        set_flash_message(:alert, :send_new_ip_instructions)
+        redirect_to new_session_path(resource_class)
 
-      # Send an email to the user with a sign in link containing a unique
-      # token that is valid for 5 minutes.
-      resource_class.send_new_ip_email(resource_params)
+        # Send an email to the user with a sign in link containing a unique
+        # token that is valid for 5 minutes.
+        resource_class.send_new_ip_email(resource_params)
+      end
 
-      # Debug mode only
-      if Devise.debug_mode && Rails.env.production?
+      # debug or info_only mode
+      if (Devise.debug_mode || Devise.info_only) && Rails.env.production?
         require 'rollbar'
         Rollbar.debug(guard.failures, 'Unrecognised request')
       end

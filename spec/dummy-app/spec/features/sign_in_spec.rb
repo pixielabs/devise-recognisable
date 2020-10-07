@@ -118,7 +118,7 @@ RSpec.feature "Sign in" do
         recognisable_session.update(sign_in_ip: new_ip)
       end
 
-      it 'send a debug message to Rollbar' do
+      it 'sends a debug message to Rollbar' do
         expect(Rollbar).to receive(:debug)
         .with(hash_including(
           :failures=> {:ip_address=>{:request_value=>"127.0.0.1", :session_value=>new_ip}},
@@ -135,6 +135,46 @@ RSpec.feature "Sign in" do
 
       after do
         Devise.debug_mode = false
+        Rails.env = 'test'
+      end
+    end
+
+    context 'with Devise.info_only set to true' do
+      let!(:new_ip) { FFaker::Internet.ip_v4_address }
+      before do
+        Devise.info_only = true
+        Rails.env = 'production'
+        recognisable_session.update(sign_in_ip: new_ip)
+      end
+
+      it 'works and does not send an email' do
+        visit '/'
+        expect(page).to have_content 'Welcome to my website'
+        click_link 'Log in'
+        fill_in 'Email', with: user.email
+        fill_in 'Password', with: user.password
+        click_button 'Log in'
+        expect(page).to have_content 'Home sweet home'
+        expect(page).to have_content('Signed in successfully')
+      end
+
+      it 'sends a debug message to Rollbar' do
+        expect(Rollbar).to receive(:debug)
+        .with(hash_including(
+          :failures=> {:ip_address=>{:request_value=>"127.0.0.1", :session_value=>new_ip}},
+          :score=>2,
+          :user_id=>1,
+          :user_type=>"User"
+          ), "Unrecognised request")
+        visit '/'
+        click_link 'Log in'
+        fill_in 'Email', with: user.email
+        fill_in 'Password', with: user.password
+        click_button 'Log in'
+      end
+
+      after do
+        Devise.info_only = false
         Rails.env = 'test'
       end
     end

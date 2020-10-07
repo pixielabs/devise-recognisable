@@ -64,6 +64,20 @@ config.debug_mode = true
 _N.B. Debug mode only works in a production environment, so to actually log the
 output to Rollbar you will need to deploy your app._
 
+## Info_only mode
+
+You can run DeviseRecognisable in `info_only` mode which turns
+devise_recongise __off__. In `info_only` mode, if devise_recognise does not
+recognise the login request source, it logs the request details, but does not
+require the user to click a link in their email.
+
+To run DeviseRecognisable in `info_only` mode, you need to add the following line
+to your app's Devise initializer file, `./config/initializers/devise.rb`.
+
+```ruby
+config.info_only = true
+```
+
 ## Deploying to Staging
 
 If you want to deploy to staging, first merge your changes into the staging

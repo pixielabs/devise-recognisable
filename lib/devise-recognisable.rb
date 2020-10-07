@@ -38,6 +38,13 @@ module Devise
   # production.
   mattr_accessor :debug_mode
   @@debug_mode = false
+
+  # Debug: Information only mode. Turns devise_recongise __off__. If
+  # devise_recognise does not recognise the login request source, it logs the
+  # request details, but does not require the user to click a link
+  # in their email.
+  mattr_accessor :info_only
+  @@info_only = false
 end
 
 Devise.add_module :recognisable, model: 'devise-recognisable/model'
