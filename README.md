@@ -52,6 +52,29 @@ of the request match the previous signin.
 `:relaxed` - requires users to sign in if more than 2 of the recognisable details
 of the request match the previous signin.
 
+To configure DeviseRecognisable's security level to `:relaxed`, you would need
+to add the following line to your app's Devise initializer file,
+`./config/initializers/devise.rb`.
+
+```ruby
+config.security_level = :relaxed
+```
+
+## Max IP address distance
+
+One of the checks DeviseRecognise makes is the geographic distance between the
+the IP address of the login request and the IP address of a previous login.
+You can configure the `max_ip_distance` of DeviseRecognisable in miles
+(default: 100).
+
+To configure DeviseRecognisable's `max_ip_distance` to 50 miles, you would need
+to add the following line to your app's Devise initializer file,
+`./config/initializers/devise.rb`.
+
+```ruby
+config.max_ip_distance = 50
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run
