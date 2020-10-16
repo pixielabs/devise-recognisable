@@ -82,6 +82,10 @@ class DeviseRecognisable::Guard
   def compare_user_agents(session_user_agent)
     return true if session_user_agent == @request.user_agent
 
+    # DamerauLevenshtein.distance() takes two strings and a optional
+    # argument. The optional argument specifies which algorithm should
+    # be used to calculate the distance between the two strings.
+    # Here we pass in 0 to use the Levenshtein distance.
     distance = DamerauLevenshtein.distance(@request.user_agent, session_user_agent, 0)
 
     distance < MAX_LEVENSHTEIN_DISTANCE
@@ -113,6 +117,10 @@ class DeviseRecognisable::Guard
       failures[:failures][:user_agent] = {
         request_value: @request.user_agent,
         session_value: @closest_match[:session].user_agent,
+        # DamerauLevenshtein.distance() takes two strings and a optional
+        # argument. The optional argument specifies which algorithm should
+        # be used to calculate the distance between the two strings.
+        # Here we pass in 0 to use the Levenshtein distance.
         levenshtein_distance: DamerauLevenshtein.distance(
           @request.user_agent,
           @closest_match[:session].session_user_agent,
