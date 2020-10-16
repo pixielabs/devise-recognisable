@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "devise"
   spec.add_dependency "jwt"
   spec.add_dependency "geocoder"
+  spec.add_dependency 'damerau-levenshtein', '~> 1.1'
 
   spec.add_development_dependency "bundler", "~> 2.0"
   spec.add_development_dependency "rake", "~> 13.0"

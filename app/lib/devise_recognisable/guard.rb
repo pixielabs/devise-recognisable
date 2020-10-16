@@ -1,6 +1,12 @@
+require "damerau-levenshtein"
+
 # A Class that is responsible for recognising a request by comparing the request
 # to previous sign ins.
 class DeviseRecognisable::Guard
+  # NOTE: I've set this to 0 for now so we can observe the Levenshtein distances
+  # in debug_mode. We can set it to an appropriate value when we have more data.
+  MAX_LEVENSHTEIN_DISTANCE = Rails.env.test? ? 10 : 0
+
   @@required_scores = {
     relaxed: 0,
     normal: 1,
@@ -46,7 +52,7 @@ class DeviseRecognisable::Guard
     score += 1 if compare_ip_addresses(session.sign_in_ip)
 
     # Is the request's User Agent different to the session's sign in?
-    score += 1 if session.user_agent == @request.user_agent
+    score += 1 if compare_user_agents(session.user_agent)
 
     # Is the request's Accept header different to the previous sign in?
     score += 1 if session.accept_header == @request.headers["HTTP_ACCEPT"]
@@ -68,6 +74,21 @@ class DeviseRecognisable::Guard
     distance = Geocoder::Calculations.distance_between(previous_sign_in&.coordinates, current_sign_in&.coordinates)
     
     distance < Devise.max_ip_distance
+  end
+
+  # Method to check if the user agent strings are similar. Uses the Levenshtein
+  # distance to calculate the minumum number of changes required to make an
+  # exact match. Takes a session user agent string and returns a bool.
+  def compare_user_agents(session_user_agent)
+    return true if session_user_agent == @request.user_agent
+
+    # DamerauLevenshtein.distance() takes two strings and a optional
+    # argument. The optional argument specifies which algorithm should
+    # be used to calculate the distance between the two strings.
+    # Here we pass in 0 to use the Levenshtein distance.
+    distance = DamerauLevenshtein.distance(@request.user_agent, session_user_agent, 0)
+
+    distance < MAX_LEVENSHTEIN_DISTANCE
   end
 
   # debug or info_only modes: Returns a results object that contains the relevant
@@ -92,10 +113,19 @@ class DeviseRecognisable::Guard
     end
 
     # Is the request's User Agent different to the session's sign in?
-    unless @closest_match[:session].user_agent == @request.user_agent
+    unless compare_user_agents(@closest_match[:session].user_agent)
       failures[:failures][:user_agent] = {
         request_value: @request.user_agent,
-        session_value: @closest_match[:session].user_agent
+        session_value: @closest_match[:session].user_agent,
+        # DamerauLevenshtein.distance() takes two strings and a optional
+        # argument. The optional argument specifies which algorithm should
+        # be used to calculate the distance between the two strings.
+        # Here we pass in 0 to use the Levenshtein distance.
+        levenshtein_distance: DamerauLevenshtein.distance(
+          @request.user_agent,
+          @closest_match[:session].session_user_agent,
+          0
+        )
       }
     end
 

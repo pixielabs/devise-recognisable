@@ -207,6 +207,26 @@ RSpec.feature "Sign in" do
     end
   end
 
+  context 'from a device with User Agent that is only slightly different' do
+    let!(:recognisable_session) { FactoryBot.create :recognisable_session, recognisable_session_values }
+    # Change the Chrome build number by one
+    let!(:new_user_agent) { user_agent.gsub(/78.0.3904.108/, '78.0.3904.109') }
+
+    before do
+      recognisable_session.update!(user_agent: new_user_agent)
+      visit '/'
+      click_link 'Log in'
+      fill_in 'Email', with: user.email
+      fill_in 'Password', with: user.password
+      click_button 'Log in'
+    end
+
+    it 'logs the user in' do
+      expect(page).to have_content 'Home sweet home'
+      expect(page).to have_content('Signed in successfully')
+    end
+  end
+
   context 'from a device with a different Accept header value' do
     let!(:recognisable_session) { FactoryBot.create :recognisable_session, recognisable_session_values }
     let!(:new_accept_header) { 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8' }
