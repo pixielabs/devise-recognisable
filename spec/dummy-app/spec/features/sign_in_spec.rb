@@ -120,12 +120,16 @@ RSpec.feature "Sign in" do
 
       it 'sends a debug message to Rollbar' do
         expect(Rollbar).to receive(:debug)
-        .with(hash_including(
-          :failures=> {:ip_address=>{:request_value=>"127.0.0.1", :session_value=>new_ip}},
-          :score=>2,
-          :user_id=>1,
-          :user_type=>"User"
-          ), "Unrecognised request")
+          .with(hash_including(
+            :failures=> {:ip_address=>{
+              :request_value=>"127.0.0.1",
+              :session_value=>new_ip,
+              :comparison_result=>:complete_mismatch
+            }},
+            :score=>2,
+            :user_id=>1,
+            :user_type=>"User"
+            ), "Unrecognised request")
         visit '/'
         click_link 'Log in'
         fill_in 'Email', with: user.email
@@ -160,12 +164,16 @@ RSpec.feature "Sign in" do
 
       it 'sends a debug message to Rollbar' do
         expect(Rollbar).to receive(:debug)
-        .with(hash_including(
-          :failures=> {:ip_address=>{:request_value=>"127.0.0.1", :session_value=>new_ip}},
-          :score=>2,
-          :user_id=>1,
-          :user_type=>"User"
-          ), "Unrecognised request")
+          .with(hash_including(
+            :failures=> {:ip_address=>{
+              :request_value=>"127.0.0.1",
+              :session_value=>new_ip,
+              :comparison_result=>:complete_mismatch
+            }},
+            :score=>2,
+            :user_id=>1,
+            :user_type=>"User"
+            ), "Unrecognised request")
         visit '/'
         click_link 'Log in'
         fill_in 'Email', with: user.email
