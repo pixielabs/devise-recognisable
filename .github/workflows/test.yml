@@ -19,7 +19,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Install Ruby version specified in `.ruby-version`
-        uses: eregon/use-ruby-action@master
+        uses: ruby/setup-ruby@v1
+        with:
+          working-directory: './spec/dummy-app'
       - name: Install required apt packages
         run: |
           sudo apt-get -y install libpq-dev
