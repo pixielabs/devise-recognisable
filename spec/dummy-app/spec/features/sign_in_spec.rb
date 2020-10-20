@@ -99,6 +99,7 @@ RSpec.feature "Sign in" do
           open_email(user.email, with_subject: I18n.t('devise.mailer.new_ip.subject'))
           visit_in_email('Log in')
           expect(page).to have_content('Home sweet home')
+          expect(page).to_not have_content 'You are already signed in'
         end
 
         it 'creates a new DeviseRecognisable::RecognisableSession on sucessfull sign in' do
