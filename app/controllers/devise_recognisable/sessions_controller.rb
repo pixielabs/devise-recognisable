@@ -1,7 +1,7 @@
 require 'geocoder'
 
 class DeviseRecognisable::SessionsController < Devise::SessionsController
-  prepend_before_action :check_for_authentication_token, only: :new
+  append_before_action :check_for_authentication_token, only: :new
   prepend_before_action :perform_recognition_check, only: :create
   append_after_action :store_recognisable_details, only: :create
  
@@ -55,6 +55,7 @@ class DeviseRecognisable::SessionsController < Devise::SessionsController
         user_agent: request.user_agent,
         accept_header: request.headers["HTTP_ACCEPT"]
       )
+      redirect_to after_sign_in_path_for(resource)
     end
   end
 
