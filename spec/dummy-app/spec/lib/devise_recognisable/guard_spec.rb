@@ -37,10 +37,17 @@ RSpec.describe DeviseRecognisable::Guard do
       end
     end
 
-    context 'if the ip addresses are completly different' do
+    context 'if the ip addresses are completely different' do
       let(:mock_geocode_location) { double("MockGeocodeLocation", :ip => "40.100.100.100") }
       it 'returns :within_distance' do
         expect(guard.compare_ip_addresses(mock_session.sign_in_ip)).to eq :complete_mismatch
+      end
+    end
+
+    context 'if either ip address is IPv6' do
+      let(:mock_geocode_location) { double("MockGeocodeLocation", :ip => "2001:0db8:0000:0000:0000:ff00:0042:8329") }
+      it 'returns :within_distance' do
+        expect(guard.compare_ip_addresses(mock_session.sign_in_ip)).to eq :ip_version_mismatch
       end
     end
   end

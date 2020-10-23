@@ -59,7 +59,7 @@ end
 
 group :test do
   gem 'capybara'
-  gem 'ffaker'
+  gem 'faker'
   gem 'factory_bot_rails'
   gem 'email_spec'
 end
