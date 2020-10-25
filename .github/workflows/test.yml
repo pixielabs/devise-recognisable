@@ -39,4 +39,4 @@ jobs:
         run: |
           cd spec/dummy-app/
           bundle exec rails db:setup
-          bundle exec rails test
+          bundle exec rspec
