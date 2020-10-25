@@ -36,8 +36,6 @@ jobs:
           cd spec/dummy-app/
           bundle install --jobs 4 --retry 3
       - name: Rails test
-        env: # Or as an environment variable
-          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
         run: |
           cd spec/dummy-app/
           bundle exec rails db:setup
