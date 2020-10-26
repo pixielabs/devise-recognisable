@@ -71,9 +71,9 @@ class DeviseRecognisable::Guard
     return :exact_match if session_address == @request.location.ip
 
     # Check that neither IP address is IPv6.
-    # If either is, return :ip_version_mismatch.
+    # If either is, return :complete_mismatch.
     if ipv6?(@request.location.ip) || ipv6?(session_address)
-      return :ip_version_mismatch
+      return :complete_mismatch
     end
 
     # Check if the IP network octets match
