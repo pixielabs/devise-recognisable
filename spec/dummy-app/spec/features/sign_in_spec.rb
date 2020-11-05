@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.feature "Sign in" do
-  let(:email) { FFaker::Internet.email }
-  let(:password) { FFaker::Internet.password }
+  let(:email) { Faker::Internet.email }
+  let(:password) { Faker::Internet.password }
   let!(:user) { FactoryBot.create :user }
 
   let!(:user_agent) { 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36' }
@@ -70,7 +70,7 @@ RSpec.feature "Sign in" do
         visit '/'
         click_link 'Log in'
         fill_in 'Email', with: email
-        fill_in 'Password', with: FFaker::Internet.password
+        fill_in 'Password', with: Faker::Internet.password
         click_button 'Log in'
       }.not_to change { DeviseRecognisable::RecognisableSession.count }
     end
@@ -80,39 +80,72 @@ RSpec.feature "Sign in" do
     let!(:recognisable_session) { FactoryBot.create :recognisable_session, recognisable_session_values }
 
     context 'with Devise.debug_mode set to false' do
-      before do
-        recognisable_session.update(sign_in_ip: FFaker::Internet.ip_v4_address)
-        visit '/'
-        click_link 'Log in'
-        fill_in 'Email', with: user.email
-        fill_in 'Password', with: user.password
-        click_button 'Log in'
-      end
-
-      it 'does not log the user in' do
-        expect(page).to have_content I18n.t('devise.sessions.send_new_ip_instructions')
-        expect(page).to_not have_content('Home sweet home')
-      end
-
-      context 'visiting the link in the email' do
-        it 'logs the user in' do
-          open_email(user.email, with_subject: I18n.t('devise.mailer.new_ip.subject'))
-          visit_in_email('Log in')
-          expect(page).to have_content('Home sweet home')
-          expect(page).to_not have_content 'You are already signed in'
+      context 'if the ip addresses are of the same IP version' do
+        before do
+          recognisable_session.update(sign_in_ip: Faker::Internet.ip_v4_address)
+          visit '/'
+          click_link 'Log in'
+          fill_in 'Email', with: user.email
+          fill_in 'Password', with: user.password
+          click_button 'Log in'
         end
 
-        it 'creates a new DeviseRecognisable::RecognisableSession on sucessfull sign in' do
-          expect {
+        it 'does not log the user in' do
+          expect(page).to have_content I18n.t('devise.sessions.send_new_ip_instructions')
+          expect(page).to_not have_content('Home sweet home')
+        end
+
+        context 'visiting the link in the email' do
+          it 'logs the user in' do
             open_email(user.email, with_subject: I18n.t('devise.mailer.new_ip.subject'))
             visit_in_email('Log in')
-          }.to change { DeviseRecognisable::RecognisableSession.count }.from(1).to(2)
+            expect(page).to have_content('Home sweet home')
+            expect(page).to_not have_content 'You are already signed in'
+          end
+
+          it 'creates a new DeviseRecognisable::RecognisableSession on sucessfull sign in' do
+            expect {
+              open_email(user.email, with_subject: I18n.t('devise.mailer.new_ip.subject'))
+              visit_in_email('Log in')
+            }.to change { DeviseRecognisable::RecognisableSession.count }.from(1).to(2)
+          end
+        end
+      end
+
+      context 'if the ip addresses are of different IP versions' do
+        before do
+          recognisable_session.update(sign_in_ip: Faker::Internet.ip_v6_address)
+          visit '/'
+          click_link 'Log in'
+          fill_in 'Email', with: user.email
+          fill_in 'Password', with: user.password
+          click_button 'Log in'
+        end
+
+        it 'does not log the user in' do
+          expect(page).to have_content I18n.t('devise.sessions.send_new_ip_instructions')
+          expect(page).to_not have_content('Home sweet home')
+        end
+
+        context 'visiting the link in the email' do
+          it 'logs the user in' do
+            open_email(user.email, with_subject: I18n.t('devise.mailer.new_ip.subject'))
+            visit_in_email('Log in')
+            expect(page).to have_content('Home sweet home')
+          end
+
+          it 'creates a new DeviseRecognisable::RecognisableSession on sucessfull sign in' do
+            expect {
+              open_email(user.email, with_subject: I18n.t('devise.mailer.new_ip.subject'))
+              visit_in_email('Log in')
+            }.to change { DeviseRecognisable::RecognisableSession.count }.from(1).to(2)
+          end
         end
       end
     end
 
     context 'with Devise.debug_mode set to true' do
-      let!(:new_ip) { FFaker::Internet.ip_v4_address }
+      let!(:new_ip) { Faker::Internet.ip_v4_address }
       before do
         Devise.debug_mode = true
         Rails.env = 'production'
@@ -121,12 +154,16 @@ RSpec.feature "Sign in" do
 
       it 'sends a debug message to Rollbar' do
         expect(Rollbar).to receive(:debug)
-        .with(hash_including(
-          :failures=> {:ip_address=>{:request_value=>"127.0.0.1", :session_value=>new_ip}},
-          :score=>2,
-          :user_id=>1,
-          :user_type=>"User"
-          ), "Unrecognised request")
+          .with(hash_including(
+            :failures=> {:ip_address=>{
+              :request_value=>"127.0.0.1",
+              :session_value=>new_ip,
+              :comparison_result=>:complete_mismatch
+            }},
+            :score=>2,
+            :user_id=>1,
+            :user_type=>"User"
+            ), "Unrecognised request")
         visit '/'
         click_link 'Log in'
         fill_in 'Email', with: user.email
@@ -141,7 +178,7 @@ RSpec.feature "Sign in" do
     end
 
     context 'with Devise.info_only set to true' do
-      let!(:new_ip) { FFaker::Internet.ip_v4_address }
+      let!(:new_ip) { Faker::Internet.ip_v4_address }
       before do
         Devise.info_only = true
         Rails.env = 'production'
@@ -161,12 +198,16 @@ RSpec.feature "Sign in" do
 
       it 'sends a debug message to Rollbar' do
         expect(Rollbar).to receive(:debug)
-        .with(hash_including(
-          :failures=> {:ip_address=>{:request_value=>"127.0.0.1", :session_value=>new_ip}},
-          :score=>2,
-          :user_id=>1,
-          :user_type=>"User"
-          ), "Unrecognised request")
+          .with(hash_including(
+            :failures=> {:ip_address=>{
+              :request_value=>"127.0.0.1",
+              :session_value=>new_ip,
+              :comparison_result=>:complete_mismatch
+            }},
+            :score=>2,
+            :user_id=>1,
+            :user_type=>"User"
+            ), "Unrecognised request")
         visit '/'
         click_link 'Log in'
         fill_in 'Email', with: user.email

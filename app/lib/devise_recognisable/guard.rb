@@ -8,9 +8,9 @@ class DeviseRecognisable::Guard
   MAX_LEVENSHTEIN_DISTANCE = Rails.env.test? ? 10 : 0
 
   @@required_scores = {
-    relaxed: 0,
-    normal: 1,
-    strict: 2
+    relaxed: 2,
+    normal: 3,
+    strict: 4
   }
 
   def self.with(previous_sessions)
@@ -49,7 +49,11 @@ class DeviseRecognisable::Guard
 
     # Is the requests's IP different to the session's?
     # Is it more than a certain distance from the session's IP address?
-    score += 1 if compare_ip_addresses(session.sign_in_ip)
+    case compare_ip_addresses(session.sign_in_ip)
+    when :exact_match then score += 3
+    when :network_match then score += 2
+    when :within_distance then score += 1
+    end
 
     # Is the request's User Agent different to the session's sign in?
     score += 1 if compare_user_agents(session.user_agent)
@@ -61,19 +65,33 @@ class DeviseRecognisable::Guard
   end
 
   # Method to check if the ip addresses are similar. Takes a session_address
-  # and returns a bool
+  # and returns a :symbol for the level of similarity.
   def compare_ip_addresses(session_address)
-    return true if session_address == @request.location.ip
-    
+    # Check if the IP is an exact match
+    return :exact_match if session_address == @request.location.ip
+
+    # Check that neither IP address is IPv6.
+    # If either is, return :complete_mismatch.
+    if ipv6?(@request.location.ip) || ipv6?(session_address)
+      return :complete_mismatch
+    end
+
+    # Check if the IP network octets match
+    session_network = network_octets(session_address)
+    request_network = network_octets(@request.location.ip)
+    return :network_match if session_network == request_network
+
+    # Check if the request IP is within the max_ip_distance from a previous IP
     # NOTE: Geocoder's location method might not be the safest?
     # See https://github.com/alexreisner/geocoder#geocoding-http-requests
     previous_sign_in = Geocoder.search(session_address).first
     current_sign_in = Geocoder.search(@request.location.ip).first
-    
     # NOTE: looks like sometimes the current_sign_in isn't a real thing?
     distance = Geocoder::Calculations.distance_between(previous_sign_in&.coordinates, current_sign_in&.coordinates)
-    
-    distance < Devise.max_ip_distance
+    return :within_distance if distance < Devise.max_ip_distance
+
+    # If the request IP does not pass any of the comparisons,
+    return :complete_mismatch
   end
 
   # Method to check if the user agent strings are similar. Uses the Levenshtein
@@ -82,7 +100,7 @@ class DeviseRecognisable::Guard
   def compare_user_agents(session_user_agent)
     return true if session_user_agent == @request.user_agent
 
-    # DamerauLevenshtein.distance() takes two strings and a optional
+    # DamerauLevenshtein.distance() takes two strings and an optional
     # argument. The optional argument specifies which algorithm should
     # be used to calculate the distance between the two strings.
     # Here we pass in 0 to use the Levenshtein distance.
@@ -105,10 +123,12 @@ class DeviseRecognisable::Guard
 
     # Is the requests's IP different to the session's?
     # Is it more than a certain distance from the session's IP address?
-    unless compare_ip_addresses(@closest_match[:session].sign_in_ip)
+    ip_comparison_result = compare_ip_addresses(@closest_match[:session].sign_in_ip)
+    unless ip_comparison_result == :exact_match
       failures[:failures][:ip_address] = {
         request_value: @request.location.ip,
-        session_value: @closest_match[:session].sign_in_ip
+        session_value: @closest_match[:session].sign_in_ip,
+        comparison_result: ip_comparison_result
       }
     end
 
@@ -117,7 +137,7 @@ class DeviseRecognisable::Guard
       failures[:failures][:user_agent] = {
         request_value: @request.user_agent,
         session_value: @closest_match[:session].user_agent,
-        # DamerauLevenshtein.distance() takes two strings and a optional
+        # DamerauLevenshtein.distance() takes two strings and an optional
         # argument. The optional argument specifies which algorithm should
         # be used to calculate the distance between the two strings.
         # Here we pass in 0 to use the Levenshtein distance.
@@ -140,4 +160,29 @@ class DeviseRecognisable::Guard
     return failures
   end
 
+  private
+
+  # Extract the Network octets from an IP. Takes an IP address and returns
+  # an array of the octets. The network octets vary in number between different
+  # IP classes. You can determine the class by looking at the value of the
+  # left most octet.
+  # http://penta2.ufrgs.br/trouble/ts_ip.htm#First-Octet%20Rule
+  CLASS_A_UPPER_LIMIT = 126
+  CLASS_B_UPPER_LIMIT = 191
+  def network_octets(ip_address)
+    octets = ip_address.split('.')
+
+    left_most_octet = octets[0].to_i
+    if left_most_octet <= CLASS_A_UPPER_LIMIT
+      network_octets = [octets[0]]
+    elsif left_most_octet <= CLASS_B_UPPER_LIMIT
+      network_octets = octets[0..1]
+    else
+      network_octets = octets[0..2]
+    end
+  end
+
+  def ipv6?(ip_address)
+    ip_address.include? ':'
+  end
 end
