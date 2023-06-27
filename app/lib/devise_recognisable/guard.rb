@@ -1,4 +1,4 @@
-require "damerau-levenshtein"
+require 'damerau-levenshtein'
 
 # A Class that is responsible for recognising a request by comparing the request
 # to previous sign ins.
@@ -84,11 +84,20 @@ class DeviseRecognisable::Guard
     # Check if the request IP is within the max_ip_distance from a previous IP
     # NOTE: Geocoder's location method might not be the safest?
     # See https://github.com/alexreisner/geocoder#geocoding-http-requests
-    previous_sign_in = Geocoder.search(session_address).first
-    current_sign_in = Geocoder.search(@request.location.ip).first
-    # NOTE: looks like sometimes the current_sign_in isn't a real thing?
-    distance = Geocoder::Calculations.distance_between(previous_sign_in&.coordinates, current_sign_in&.coordinates)
-    return :within_distance if distance < Devise.max_ip_distance
+    begin
+      previous_sign_in = Geocoder.search(session_address).first
+      current_sign_in = Geocoder.search(@request.location.ip).first
+      # NOTE: looks like sometimes the current_sign_in isn't a real thing?
+    rescue => e
+      if Devise.debug_mode || Devise.info_only
+        require 'rollbar'
+        # Send information about a failed request to Rollbar
+        Rollbar.debug(e, 'A request to Geocoder failed.')
+      end
+    else
+      distance = Geocoder::Calculations.distance_between(previous_sign_in&.coordinates, current_sign_in&.coordinates)
+      return :within_distance if distance < Devise.max_ip_distance
+    end
 
     # If the request IP does not pass any of the comparisons,
     return :complete_mismatch

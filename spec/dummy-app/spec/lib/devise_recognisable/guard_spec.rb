@@ -35,6 +35,25 @@ RSpec.describe DeviseRecognisable::Guard do
           .and_return(Devise.max_ip_distance - 1)
         expect(guard.compare_ip_addresses(mock_session.sign_in_ip)).to eq :within_distance
       end
+
+      context 'if Geocoder.search raises an error' do
+        let(:error) { Geocoder::Error.new 'server error.' }
+        before do
+          allow(Devise).to receive(:debug_mode).and_return(true)
+          allow(Geocoder).to receive(:search).and_raise(error)
+        end
+
+        it "the Guard handles the error" do
+          expect(guard.compare_ip_addresses(mock_session.sign_in_ip)).to eq :complete_mismatch
+        end
+
+        it "Rollbar receives the error" do
+          expect(Rollbar).to receive(:debug)
+            .with(error, 'A request to Geocoder failed.')
+
+          guard.compare_ip_addresses(mock_session.sign_in_ip)
+        end
+      end
     end
 
     context 'if the ip addresses are completely different' do
