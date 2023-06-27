@@ -37,7 +37,7 @@ RSpec.describe DeviseRecognisable::Guard do
       end
 
       context 'if Geocoder.search raises an error' do
-        let(:error) {Geocoder::Error.new}
+        let(:error) { Geocoder::Error.new 'server error.' }
         before do
           allow(Devise).to receive(:debug_mode).and_return(true)
           allow(Geocoder).to receive(:search).and_raise(error)
