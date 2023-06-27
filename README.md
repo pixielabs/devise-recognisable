@@ -88,17 +88,17 @@ git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygem
 
 ## Debug mode
 
-We use Rollbar to report unrecognised requests in Debug mode. If you are running
-devise_recognisable in debug mode, you will need to run `gem install rollbar`.
+We use Rollbar to report unrecognised requests in `Debug` mode. If you are running
+devise_recognisable in `debug` mode, you will need to run `gem install rollbar`.
 
-To run DeviseRecognisable in debug mode, you need to add the following line
+To run DeviseRecognisable in `debug` mode, you need to add the following line
 to your app's Devise initializer file, `./config/initializers/devise.rb`.
 
 ```ruby
 config.debug_mode = true
 ```
 
-_N.B. Debug mode only works in a production environment, so to actually log the
+_N.B. `Debug` mode only works in a production environment, so to actually log the
 output to Rollbar you will need to deploy your app._
 
 ## Info_only mode
@@ -107,6 +107,9 @@ You can run DeviseRecognisable in `info_only` mode which turns
 devise_recongise __off__. In `info_only` mode, if devise_recognise does not
 recognise the login request source, it logs the request details, but does not
 require the user to click a link in their email.
+
+If you are running
+devise_recognisable in `info_only` mode, you will need to run `gem install rollbar`.
 
 To run DeviseRecognisable in `info_only` mode, you need to add the following line
 to your app's Devise initializer file, `./config/initializers/devise.rb`.
