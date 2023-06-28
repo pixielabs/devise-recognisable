@@ -39,12 +39,19 @@ module Devise
   mattr_accessor :debug_mode
   @@debug_mode = false
 
+
   # Debug: Information only mode. Turns devise_recongise __off__. If
   # devise_recognise does not recognise the login request source, it logs the
   # request details, but does not require the user to click a link
   # in their email.
   mattr_accessor :info_only
   @@info_only = false
+
+  # In debug mode, the app will attempt to report to 'Unrecognised request'
+  # We do not want to force the user to use Rollbar, we would like them to use
+  # whichever error monitoring gem they want to use.
+  mattr_accessor :error_logger
+  @@error_logger = nil
 end
 
 Devise.add_module :recognisable, model: 'devise-recognisable/model'
