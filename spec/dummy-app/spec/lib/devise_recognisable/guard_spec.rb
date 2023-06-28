@@ -5,7 +5,7 @@ RSpec.describe DeviseRecognisable::Guard do
   let(:mock_session) { double("MockPreviousSession", :sign_in_ip => "106.114.4.175") }
   let(:mock_request) { double("MockRequest", :location => mock_geocode_location) }
   let(:guard) { described_class.new([mock_session]) }
-  
+
   context "#compare_ip_addresses" do
     before do
       # This is a little odd, but all we want to assign the mock_request to
@@ -47,9 +47,29 @@ RSpec.describe DeviseRecognisable::Guard do
           expect(guard.compare_ip_addresses(mock_session.sign_in_ip)).to eq :complete_mismatch
         end
 
-        it "Rollbar receives the error" do
-          expect(Rollbar).to receive(:debug)
-            .with(error, 'A request to Geocoder failed.')
+        context 'if there is a Devise.error_logger' do
+          #  In order to send debug messages, we will need to set up Devise.error_logger with the error
+          # monitoring tool of our choice, we have chosen Rollbar for tests
+          let!(:send_debug_message) { lambda { |info, error_message| Rollbar.debug(info, error_message) } }
+
+          before do
+            Devise.error_logger = send_debug_message
+          end
+
+          it "Rollbar receives the error" do
+            expect(Rollbar).to receive(:debug)
+              .with(error, 'A request to Geocoder failed.')
+
+            guard.compare_ip_addresses(mock_session.sign_in_ip)
+          end
+
+          after do
+            Devise.error_logger = nil
+          end
+        end
+
+        it 'Rollbar will not receive an errir if there is no Devise.error_logger' do
+          expect(Rollbar).to receive(:debug).never
 
           guard.compare_ip_addresses(mock_session.sign_in_ip)
         end

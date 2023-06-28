@@ -78,6 +78,9 @@ RSpec.feature "Sign in" do
 
   context 'from a different IP' do
     let!(:recognisable_session) { FactoryBot.create :recognisable_session, recognisable_session_values }
+    #  In order to send debug messages, we will need to set up Devise.error_logger with the error
+    # monitoring tool of our choice, we have chosen Rollbar for tests
+    let!(:send_debug_message) { lambda { |info, error_message| Rollbar.debug(info, error_message) } }
 
     context 'with Devise.debug_mode set to false' do
       context 'if the ip addresses are of the same IP version' do
@@ -152,18 +155,33 @@ RSpec.feature "Sign in" do
         recognisable_session.update(sign_in_ip: new_ip)
       end
 
-      it 'sends a debug message to Rollbar' do
-        expect(Rollbar).to receive(:debug)
-          .with(hash_including(
-            :failures=> {:ip_address=>{
-              :request_value=>"127.0.0.1",
-              :session_value=>new_ip,
-              :comparison_result=>:complete_mismatch
-            }},
-            :score=>2,
-            :user_id=>1,
-            :user_type=>"User"
-            ), "Unrecognised request")
+      context 'if there is a Devise.error_logger' do
+        before do
+          Devise.error_logger = send_debug_message
+        end
+
+        it 'Rollbar will recieve an error message' do
+          expect(Rollbar).to receive(:debug)
+            .with(hash_including(
+              :failures=> {:ip_address=>{
+                :request_value=>"127.0.0.1",
+                :session_value=>new_ip,
+                :comparison_result=>:complete_mismatch
+              }},
+              :score=>2,
+              :user_id=>1,
+              :user_type=>"User"
+              ), "Unrecognised request")
+          visit '/'
+          click_link 'Log in'
+          fill_in 'Email', with: user.email
+          fill_in 'Password', with: user.password
+          click_button 'Log in'
+        end
+      end
+
+      it 'Rollbar will not receive an error message if there is no Devise.error_logger' do
+        expect(Rollbar).to receive(:debug).never
         visit '/'
         click_link 'Log in'
         fill_in 'Email', with: user.email
@@ -185,6 +203,7 @@ RSpec.feature "Sign in" do
         recognisable_session.update(sign_in_ip: new_ip)
       end
 
+
       it 'works and does not send an email' do
         visit '/'
         expect(page).to have_content 'Welcome to my website'
@@ -196,18 +215,33 @@ RSpec.feature "Sign in" do
         expect(page).to have_content('Signed in successfully')
       end
 
-      it 'sends a debug message to Rollbar' do
-        expect(Rollbar).to receive(:debug)
-          .with(hash_including(
-            :failures=> {:ip_address=>{
-              :request_value=>"127.0.0.1",
-              :session_value=>new_ip,
-              :comparison_result=>:complete_mismatch
-            }},
-            :score=>2,
-            :user_id=>1,
-            :user_type=>"User"
-            ), "Unrecognised request")
+      context 'if there is a Devise.error_logger' do
+        before do
+          Devise.error_logger = send_debug_message
+        end
+
+        it 'a debug message is sent to Rollbar' do
+          expect(Rollbar).to receive(:debug)
+            .with(hash_including(
+              :failures=> {:ip_address=>{
+                :request_value=>"127.0.0.1",
+                :session_value=>new_ip,
+                :comparison_result=>:complete_mismatch
+              }},
+              :score=>2,
+              :user_id=>1,
+              :user_type=>"User"
+              ), "Unrecognised request")
+          visit '/'
+          click_link 'Log in'
+          fill_in 'Email', with: user.email
+          fill_in 'Password', with: user.password
+          click_button 'Log in'
+        end
+      end
+
+      it 'will not send a debug message if there is no Devise.error_logger' do
+        expect(Rollbar).to receive(:debug).never
         visit '/'
         click_link 'Log in'
         fill_in 'Email', with: user.email
@@ -217,6 +251,7 @@ RSpec.feature "Sign in" do
 
       after do
         Devise.info_only = false
+        Devise.error_logger = nil
         Rails.env = 'test'
       end
     end
