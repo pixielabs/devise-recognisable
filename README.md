@@ -88,8 +88,7 @@ git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygem
 
 ## Debug mode
 
-We use Rollbar to report unrecognised requests in `Debug` mode. If you are running
-devise_recognisable in `debug` mode, you will need to run `gem install rollbar`.
+We will want to report unrecognised request in `Debug` mode to the error_logger of your choice.
 
 To run DeviseRecognisable in `debug` mode, you need to add the following line
 to your app's Devise initializer file, `./config/initializers/devise.rb`.
@@ -99,7 +98,50 @@ config.debug_mode = true
 ```
 
 _N.B. `Debug` mode only works in a production environment, so to actually log the
-output to Rollbar you will need to deploy your app._
+output to the error logger, you will need to deploy your app._
+
+## error_logger
+
+Once you have installed and configured the error logger of your choice, in order to log the output,
+you will need to configure the `Devise.error_logger` in `./config/initializers/devise.rb`.
+
+See some examples below
+
+```ruby
+#   Rollbar
+
+  require 'rollbar'
+
+  send_debug_message = lambda do |info, error_message|
+    Rollbar.debug(info, error_message)
+  end
+
+  config.error_logger = send_debug_message
+```
+
+```ruby
+#  Bugsnag
+
+require 'bugsnag'
+
+send_debug_message = lambda do |info, error_message|
+    Bugsnag.notify(info, error_message)
+end
+
+config.error_logger = send_debug_message
+```
+
+```ruby
+# Sentry
+
+require 'sentry-ruby'
+
+send_debug_message = lambda do |info, error_message|
+    Sentry.capture_exception(info, error_message)
+end
+
+config.error_logger = send_debug_message
+```
 
 ## Info_only mode
 
