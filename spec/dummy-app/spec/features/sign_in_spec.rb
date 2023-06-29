@@ -78,6 +78,9 @@ RSpec.feature "Sign in" do
 
   context 'from a different IP' do
     let!(:recognisable_session) { FactoryBot.create :recognisable_session, recognisable_session_values }
+    #  In order to send debug messages, we will need to set up Devise.error_logger with the error
+    # monitoring tool of our choice, we have chosen Rollbar for tests
+    let!(:send_debug_message) { lambda { |info, error_message| Rollbar.debug(info, error_message) } }
 
     context 'with Devise.debug_mode set to false' do
       context 'if the ip addresses are of the same IP version' do
@@ -147,41 +150,53 @@ RSpec.feature "Sign in" do
     context 'with Devise.debug_mode set to true' do
       let!(:new_ip) { Faker::Internet.ip_v4_address }
       before do
-        Devise.debug_mode = true
-        Rails.env = 'production'
+        allow(Devise).to receive(:debug_mode).and_return(true)
+        allow(Rails).to receive_message_chain(:env, :production?).and_return(true)
+        allow(Rails).to receive_message_chain(:env, :development?).and_return(false)
         recognisable_session.update(sign_in_ip: new_ip)
       end
 
-      it 'sends a debug message to Rollbar' do
-        expect(Rollbar).to receive(:debug)
-          .with(hash_including(
-            :failures=> {:ip_address=>{
-              :request_value=>"127.0.0.1",
-              :session_value=>new_ip,
-              :comparison_result=>:complete_mismatch
-            }},
-            :score=>2,
-            :user_id=>1,
-            :user_type=>"User"
-            ), "Unrecognised request")
+      context 'if there is a Devise.error_logger' do
+        before do
+          allow(Devise).to receive(:error_logger).and_return(send_debug_message)
+        end
+
+        it 'Rollbar will recieve an error message' do
+          expect(Rollbar).to receive(:debug)
+            .with(hash_including(
+              :failures=> {:ip_address=>{
+                :request_value=>"127.0.0.1",
+                :session_value=>new_ip,
+                :comparison_result=>:complete_mismatch
+              }},
+              :score=>2,
+              :user_id=>1,
+              :user_type=>"User"
+              ), "Unrecognised request")
+          visit '/'
+          click_link 'Log in'
+          fill_in 'Email', with: user.email
+          fill_in 'Password', with: user.password
+          click_button 'Log in'
+        end
+      end
+
+      it 'Rollbar will not receive an error message if there is no Devise.error_logger' do
+        expect(Rollbar).to receive(:debug).never
         visit '/'
         click_link 'Log in'
         fill_in 'Email', with: user.email
         fill_in 'Password', with: user.password
         click_button 'Log in'
       end
-
-      after do
-        Devise.debug_mode = false
-        Rails.env = 'test'
-      end
     end
 
     context 'with Devise.info_only set to true' do
       let!(:new_ip) { Faker::Internet.ip_v4_address }
       before do
-        Devise.info_only = true
-        Rails.env = 'production'
+        allow(Devise).to receive(:info_only).and_return(true)
+        allow(Rails).to receive_message_chain(:env, :production?).and_return(true)
+        allow(Rails).to receive_message_chain(:env, :development?).and_return(false)
         recognisable_session.update(sign_in_ip: new_ip)
       end
 
@@ -196,28 +211,38 @@ RSpec.feature "Sign in" do
         expect(page).to have_content('Signed in successfully')
       end
 
-      it 'sends a debug message to Rollbar' do
-        expect(Rollbar).to receive(:debug)
-          .with(hash_including(
-            :failures=> {:ip_address=>{
-              :request_value=>"127.0.0.1",
-              :session_value=>new_ip,
-              :comparison_result=>:complete_mismatch
-            }},
-            :score=>2,
-            :user_id=>1,
-            :user_type=>"User"
-            ), "Unrecognised request")
+      context 'if there is a Devise.error_logger' do
+        before do
+          allow(Devise).to receive(:error_logger).and_return(send_debug_message)
+        end
+
+        it 'a debug message is sent to Rollbar' do
+          expect(Rollbar).to receive(:debug)
+            .with(hash_including(
+              :failures=> {:ip_address=>{
+                :request_value=>"127.0.0.1",
+                :session_value=>new_ip,
+                :comparison_result=>:complete_mismatch
+              }},
+              :score=>2,
+              :user_id=>1,
+              :user_type=>"User"
+              ), "Unrecognised request")
+          visit '/'
+          click_link 'Log in'
+          fill_in 'Email', with: user.email
+          fill_in 'Password', with: user.password
+          click_button 'Log in'
+        end
+      end
+
+      it 'will not send a debug message if there is no Devise.error_logger' do
+        expect(Rollbar).to receive(:debug).never
         visit '/'
         click_link 'Log in'
         fill_in 'Email', with: user.email
         fill_in 'Password', with: user.password
         click_button 'Log in'
-      end
-
-      after do
-        Devise.info_only = false
-        Rails.env = 'test'
       end
     end
   end

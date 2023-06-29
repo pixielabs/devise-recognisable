@@ -89,10 +89,9 @@ class DeviseRecognisable::Guard
       current_sign_in = Geocoder.search(@request.location.ip).first
       # NOTE: looks like sometimes the current_sign_in isn't a real thing?
     rescue => e
-      if Devise.debug_mode || Devise.info_only
-        require 'rollbar'
-        # Send information about a failed request to Rollbar
-        Rollbar.debug(e, 'A request to Geocoder failed.')
+      if (Devise.debug_mode || Devise.info_only) && Devise.error_logger
+        # Send information about a failed request to error_logger
+        Devise.error_logger.call(e, 'A request to Geocoder failed.')
       end
     else
       distance = Geocoder::Calculations.distance_between(previous_sign_in&.coordinates, current_sign_in&.coordinates)

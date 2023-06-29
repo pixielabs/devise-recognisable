@@ -86,10 +86,57 @@ release a new version, update the version number in `version.rb`, and then run
 `bundle exec rake release`, which will create a git tag for the version, push
 git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
+
+## error_logger
+
+If you want to use `Debug` or `Info Only` mode, you will need to set up and configure
+an error monitoring tool.
+
+Once this is done, in order to log the output, you will need to configure the
+`Devise.error_logger` in `./config/initializers/devise.rb`.
+
+See some examples below
+
+```ruby
+#   Rollbar
+
+  require 'rollbar'
+
+  send_debug_message = lambda do |info, error_message|
+    Rollbar.debug(info, error_message)
+  end
+
+  config.error_logger = send_debug_message
+```
+
+```ruby
+#  Bugsnag
+
+require 'bugsnag'
+
+send_debug_message = lambda do |info, error_message|
+    Bugsnag.notify(info, error_message)
+end
+
+config.error_logger = send_debug_message
+```
+
+```ruby
+# Sentry
+
+require 'sentry-ruby'
+
+send_debug_message = lambda do |info, error_message|
+    Sentry.capture_exception(info, error_message)
+end
+
+config.error_logger = send_debug_message
+```
+
+
 ## Debug mode
 
-We use Rollbar to report unrecognised requests in `Debug` mode. If you are running
-devise_recognisable in `debug` mode, you will need to run `gem install rollbar`.
+We will want to report unrecognised requests in `Debug` mode to the error_logger of your choice.
 
 To run DeviseRecognisable in `debug` mode, you need to add the following line
 to your app's Devise initializer file, `./config/initializers/devise.rb`.
@@ -99,7 +146,7 @@ config.debug_mode = true
 ```
 
 _N.B. `Debug` mode only works in a production environment, so to actually log the
-output to Rollbar you will need to deploy your app._
+output to the error logger, you will need to deploy your app._
 
 ## Info_only mode
 
@@ -109,7 +156,7 @@ recognise the login request source, it logs the request details, but does not
 require the user to click a link in their email.
 
 If you are running
-devise_recognisable in `info_only` mode, you will need to run `gem install rollbar`.
+devise_recognisable in `info_only` mode, you will need to install and configure error logger of your choice .
 
 To run DeviseRecognisable in `info_only` mode, you need to add the following line
 to your app's Devise initializer file, `./config/initializers/devise.rb`.
