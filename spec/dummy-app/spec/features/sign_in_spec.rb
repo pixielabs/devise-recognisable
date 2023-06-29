@@ -150,14 +150,15 @@ RSpec.feature "Sign in" do
     context 'with Devise.debug_mode set to true' do
       let!(:new_ip) { Faker::Internet.ip_v4_address }
       before do
-        Devise.debug_mode = true
-        Rails.env = 'production'
+        allow(Devise).to receive(:debug_mode).and_return(true)
+        allow(Rails).to receive_message_chain(:env, :production?).and_return(true)
+        allow(Rails).to receive_message_chain(:env, :development?).and_return(false)
         recognisable_session.update(sign_in_ip: new_ip)
       end
 
       context 'if there is a Devise.error_logger' do
         before do
-          Devise.error_logger = send_debug_message
+          allow(Devise).to receive(:error_logger).and_return(send_debug_message)
         end
 
         it 'Rollbar will recieve an error message' do
@@ -188,21 +189,16 @@ RSpec.feature "Sign in" do
         fill_in 'Password', with: user.password
         click_button 'Log in'
       end
-
-      after do
-        Devise.debug_mode = false
-        Rails.env = 'test'
-      end
     end
 
     context 'with Devise.info_only set to true' do
       let!(:new_ip) { Faker::Internet.ip_v4_address }
       before do
-        Devise.info_only = true
-        Rails.env = 'production'
+        allow(Devise).to receive(:info_only).and_return(true)
+        allow(Rails).to receive_message_chain(:env, :production?).and_return(true)
+        allow(Rails).to receive_message_chain(:env, :development?).and_return(false)
         recognisable_session.update(sign_in_ip: new_ip)
       end
-
 
       it 'works and does not send an email' do
         visit '/'
@@ -217,7 +213,7 @@ RSpec.feature "Sign in" do
 
       context 'if there is a Devise.error_logger' do
         before do
-          Devise.error_logger = send_debug_message
+          allow(Devise).to receive(:error_logger).and_return(send_debug_message)
         end
 
         it 'a debug message is sent to Rollbar' do
@@ -247,12 +243,6 @@ RSpec.feature "Sign in" do
         fill_in 'Email', with: user.email
         fill_in 'Password', with: user.password
         click_button 'Log in'
-      end
-
-      after do
-        Devise.info_only = false
-        Devise.error_logger = nil
-        Rails.env = 'test'
       end
     end
   end

@@ -53,7 +53,7 @@ RSpec.describe DeviseRecognisable::Guard do
           let!(:send_debug_message) { lambda { |info, error_message| Rollbar.debug(info, error_message) } }
 
           before do
-            Devise.error_logger = send_debug_message
+            allow(Devise).to receive(:error_logger).and_return(send_debug_message)
           end
 
           it "Rollbar receives the error" do
@@ -61,10 +61,6 @@ RSpec.describe DeviseRecognisable::Guard do
               .with(error, 'A request to Geocoder failed.')
 
             guard.compare_ip_addresses(mock_session.sign_in_ip)
-          end
-
-          after do
-            Devise.error_logger = nil
           end
         end
 

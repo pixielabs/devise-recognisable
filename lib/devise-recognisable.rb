@@ -48,8 +48,7 @@ module Devise
   @@info_only = false
 
   # In debug mode, the app will attempt to report to 'Unrecognised request'
-  # We do not want to force the user to use Rollbar, we would like them to use
-  # whichever error monitoring gem they want to use.
+  # We do not want to force the user to use any specific error monitoring tool
   mattr_accessor :error_logger
   @@error_logger = nil
 end
