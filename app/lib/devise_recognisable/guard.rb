@@ -90,7 +90,7 @@ class DeviseRecognisable::Guard
       # NOTE: looks like sometimes the current_sign_in isn't a real thing?
     rescue => e
       if (Devise.debug_mode || Devise.info_only) && Devise.error_logger
-        # Send information about a failed request to Rollbar
+        # Send information about a failed request to error_logger
         Devise.error_logger.call(e, 'A request to Geocoder failed.')
       end
     else
