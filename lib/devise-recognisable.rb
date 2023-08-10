@@ -1,4 +1,5 @@
 require 'devise'
+require_relative "devise-recognisable/guard"
 
 module DeviseRecognisable
   autoload :Mailer, 'devise-recognisable/mailer'
