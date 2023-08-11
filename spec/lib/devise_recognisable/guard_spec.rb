@@ -1,8 +1,6 @@
 require 'spec_helper'
 require 'geocoder'
 
-require_relative '../../../lib/devise-recognisable'
-
 RSpec.describe DeviseRecognisable::Guard do
   let(:mock_session) { double("MockPreviousSession", :sign_in_ip => "106.114.4.175") }
   let(:mock_request) { double("MockRequest", :location => mock_geocode_location) }

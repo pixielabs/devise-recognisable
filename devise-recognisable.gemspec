@@ -31,4 +31,13 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 2.0"
   spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rspec", "~> 3.0"
+
+  spec.add_development_dependency "factory_bot_rails"
+  spec.add_development_dependency "rspec-rails"
+  spec.add_development_dependency 'bootsnap', '>= 1.1.0'
+  spec.add_development_dependency 'sprockets-rails'
+  spec.add_development_dependency 'listen'
+  spec.add_development_dependency 'sqlite3'
+  spec.add_development_dependency 'faker'
+  spec.add_development_dependency 'capybara'
 end

@@ -1,5 +1,8 @@
 require 'devise'
+require "active_record"
+
 require_relative "devise-recognisable/guard"
+require_relative "devise-recognisable/recognisable_session"
 
 module DeviseRecognisable
   autoload :Mailer, 'devise-recognisable/mailer'

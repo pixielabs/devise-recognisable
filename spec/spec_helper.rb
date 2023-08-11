@@ -1,7 +1,12 @@
 require "bundler/setup"
 require "devise-recognisable"
+require 'factory_bot_rails'
+
+FactoryBot.definition_file_paths = %w{./factories ./test/factories ./spec/factories}
+FactoryBot.find_definitions
 
 RSpec.configure do |config|
+
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"
 
