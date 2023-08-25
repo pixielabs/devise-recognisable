@@ -62,7 +62,7 @@ RSpec.feature "Sign in" do
         fill_in 'Email', with: email
         fill_in 'Password', with: password
         click_button 'Log in'
-      }.to change { DeviseRecognisable::RecognisableSession.count }.from(0).to(1)
+      }.to change { DeviseRecognisable::RecognisableSession.count }.from(1).to(2)
     end
 
     it "doesn't create a new DeviseRecognisable::RecognisableSession on unsuccessful sign in" do
