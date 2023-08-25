@@ -33,10 +33,7 @@ jobs:
       - name: Bundle install
         run: |
           bundle config path vendor/bundle
-          cd spec/dummy-app/
           bundle install --jobs 4 --retry 3
       - name: Rails test
         run: |
-          cd spec/dummy-app/
-          bundle exec rails db:setup
           bundle exec rspec

@@ -77,9 +77,12 @@ config.max_ip_distance = 50
 
 ## Development
 
-Check out the `dummy-app` by running `cd spec/dummy-app`. After checking out the repo,
-run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests.
-You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+Run `./bin/setup` to install all gems and setup the dummy app.
+
+You can then run the tests from the root of the app using `bundle exec rspec`
+
+if you need to perform any changes to the dummy app database or `Gemfile`, you may need to do `cd spec/dummy` before the command.
+
 
 ## error_logger
 
