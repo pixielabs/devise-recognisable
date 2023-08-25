@@ -5,4 +5,10 @@ set -vx
 
 bundle install
 
+cd spec/dummy-app
+bundle install
+./bin/rails db:setup
+./bin/rails assets:precompile
+cd ../../
+
 # Do any other automated setup that you need to do here

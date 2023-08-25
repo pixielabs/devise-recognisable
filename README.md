@@ -81,6 +81,9 @@ Check out the `dummy-app` by running `cd spec/dummy-app`. After checking out the
 run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests.
 You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
+You can then run the tests from the root of the app using `bundle exec rspec`
+
+
 ## error_logger
 
 If you want to use `Debug` or `Info Only` mode, you will need to set up and configure
