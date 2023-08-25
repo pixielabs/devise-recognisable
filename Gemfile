@@ -20,4 +20,5 @@ group :test do
   gem 'faker'
   gem 'factory_bot_rails'
   gem 'email_spec'
+  gem 'database_cleaner'
 end
