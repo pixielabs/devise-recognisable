@@ -8,9 +8,9 @@ class DeviseRecognisable::Guard
   MAX_LEVENSHTEIN_DISTANCE = Rails.env.test? ? 10 : 0
 
   @@required_scores = {
-    relaxed: 2,
-    normal: 3,
-    strict: 4
+    relaxed: 3,
+    normal: 4,
+    strict: 5
   }
 
   def self.with(previous_sessions)
@@ -60,6 +60,9 @@ class DeviseRecognisable::Guard
 
     # Is the request's Accept header different to the previous sign in?
     score += 1 if session.accept_header == @request.headers["HTTP_ACCEPT"]
+
+    # Is the request's Accept-Language header different to the previous sign in?
+    score += 1 if session.accept_language == @request.headers["Accept-Language"]
 
     return score
   end
@@ -162,6 +165,14 @@ class DeviseRecognisable::Guard
       failures[:failures][:accept_header] = {
         request_value: @request.headers["HTTP_ACCEPT"],
         session_value: @closest_match[:session].accept_header
+      }
+    end
+
+    # Is the request's Accept-Language header different to the previous sign in?
+    unless @closest_match[:session].accept_language == @request.headers["Accept-Language"]
+      failures[:failures][:accept_language] = {
+        request_value: @request.headers["Accept-Language"],
+        session_value: @closest_match[:session].accept_language
       }
     end
 
