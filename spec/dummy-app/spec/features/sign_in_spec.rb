@@ -42,7 +42,7 @@ RSpec.feature "Sign in" do
       fill_in 'Password', with: password
       fill_in 'Password confirmation', with: password
       click_button 'Sign up'
-      click_link 'Log out'
+      click_button 'Log out'
     end
 
     it 'works' do
@@ -338,7 +338,7 @@ RSpec.feature "Sign in" do
       fill_in 'Email', with: user.email
       fill_in 'Password', with: user.password
       click_button 'Log in'
-      click_link 'Log out'
+      click_button 'Log out'
 
       # Create a recognisable session from a different device.
       FactoryBot.create :recognisable_session, different_recognisable_session_values
