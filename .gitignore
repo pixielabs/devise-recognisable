@@ -9,3 +9,6 @@
 
 # rspec failure tracking
 .rspec_status
+
+# Ignore the file recording test run statuses.
+spec/dummy-app/spec/examples.txt
