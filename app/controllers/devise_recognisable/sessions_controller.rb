@@ -57,7 +57,7 @@ class DeviseRecognisable::SessionsController < Devise::SessionsController
       sign_in_at: Time.now,
       user_agent: request.user_agent,
       accept_header: request.headers["HTTP_ACCEPT"],
-      accept_language: request.headers["Accept-Language"].first
+      accept_language: request.headers["Accept-Language"]
     )
     redirect_to after_sign_in_path_for(resource)
   end

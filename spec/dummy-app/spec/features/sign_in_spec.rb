@@ -7,7 +7,7 @@ RSpec.feature "Sign in" do
 
   let!(:user_agent) { 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36' }
   let!(:accept_header) { 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' }
-  let!(:accept_language) { 'en' }
+  let!(:accept_language) { "en-GB,en-US;q=0.9,en;q=0.8" }
   let!(:recognisable_session_values) {{
     recognisable_id: user.id,
     recognisable_type: 'User',
@@ -327,7 +327,7 @@ RSpec.feature "Sign in" do
 
   context 'from a device with a different Accept-Language header value' do
     let!(:recognisable_session) { FactoryBot.create :recognisable_session, recognisable_session_values }
-    let!(:new_accept_language) { 'fr' }
+    let!(:new_accept_language) { 'en,pl;q=0.9,pl-PL;q=0.8,en-GB-oxendict;q=0.7' }
 
     before do
       recognisable_session.update!(accept_header: new_accept_language)
@@ -355,7 +355,7 @@ RSpec.feature "Sign in" do
   context 'with multiple different RecognisableSessions' do
     let!(:different_user_agent) { 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/605.1.15 (KHTML, like Gecko)' }
     let!(:different_accept_header) { 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8' }
-    let!(:different_accept_language) { 'fr' }
+    let!(:different_accept_language) { 'en,pl;q=0.9,pl-PL;q=0.8,en-GB-oxendict;q=0.7' }
     let!(:different_recognisable_session_values) {{
       recognisable_id: user.id,
       recognisable_type: 'User',
