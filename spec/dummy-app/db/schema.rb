@@ -17,6 +17,7 @@ ActiveRecord::Schema[7.0].define(version: 2020_09_30_175344) do
     t.string "sign_in_ip"
     t.string "user_agent"
     t.string "accept_header"
+    t.string "accept_language"
     t.datetime "sign_in_at", precision: nil
     t.index ["recognisable_type", "recognisable_id"], name: "recognisable_index"
   end
